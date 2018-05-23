@@ -1,0 +1,14 @@
+[
+  {
+    "source_code": "ext_test0",
+    "source_desc_from_config": "External Test Backend 0"
+  },
+  {
+    "source_code": "ext_test1",
+    "source_desc_from_config": "External Test Backend 1"
+  },
+  {
+    "source_code": "generic_test",
+    "source_desc_from_config": "Generic JSONRPC backend TEST"
+  }
+]

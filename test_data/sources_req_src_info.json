@@ -1,0 +1,27 @@
+[
+  {
+    "source_after_sales_email": "systems@ingresso.co.uk",
+    "source_code": "ext_test0",
+    "source_desc_from_config": "External Test Backend 0",
+    "source_postal_addr": "Suite 75, Victoria Place, Wellwood Street, Belfast BT12 5FX",
+    "source_system_class": "ext_test",
+    "source_system_type_string": "ext_test_core_direct",
+    "source_t_and_c": "A: Privacy Policy"
+  },
+  {
+    "source_after_sales_email": "systems@ingresso.co.uk",
+    "source_code": "ext_test1",
+    "source_desc_from_config": "External Test Backend 1",
+    "source_postal_addr": "Suite 75, Victoria Place, Wellwood Street, Belfast BT12 5FX",
+    "source_system_class": "ext_test",
+    "source_system_type_string": "ext_test_core_direct",
+    "source_t_and_c": "A: Privacy Policy"
+  },
+  {
+    "source_code": "generic_test",
+    "source_desc_from_config": "Generic JSONRPC backend TEST",
+    "source_system_class": "generic_jsonrpc",
+    "source_system_type_string": "iguana",
+    "source_t_and_c": "A: Privacy Policy"
+  }
+]

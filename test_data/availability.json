@@ -1,0 +1,97 @@
+{
+  "availability": {
+    "ticket_type": [
+      {
+        "price_band": [
+          {
+            "absolute_saving": 0,
+            "allows_leaving_single_seats": "never",
+            "discount_code": "NORMAL",
+            "discount_desc": "Regular Ticket",
+            "is_offer": false,
+            "non_offer_sale_seatprice": 50,
+            "non_offer_sale_surcharge": 5,
+            "number_available": 6,
+            "percentage_saving": 0,
+            "price_band_code": "A/pool",
+            "sale_seatprice": 50,
+            "sale_surcharge": 5
+          },
+          {
+            "absolute_saving": 0,
+            "allows_leaving_single_seats": "never",
+            "discount_code": "NORMAL",
+            "discount_desc": "Regular Ticket",
+            "is_offer": false,
+            "non_offer_sale_seatprice": 40,
+            "non_offer_sale_surcharge": 5,
+            "number_available": 6,
+            "percentage_saving": 0,
+            "price_band_code": "B/pool",
+            "sale_seatprice": 40,
+            "sale_surcharge": 5
+          }
+        ],
+        "ticket_type_code": "STALLS",
+        "ticket_type_desc": "Stalls"
+      },
+      {
+        "price_band": [
+          {
+            "absolute_saving": 0,
+            "allows_leaving_single_seats": "never",
+            "discount_code": "NORMAL",
+            "discount_desc": "Regular Ticket",
+            "is_offer": false,
+            "non_offer_sale_seatprice": 35,
+            "non_offer_sale_surcharge": 5,
+            "number_available": 6,
+            "percentage_saving": 0,
+            "price_band_code": "A/pool",
+            "sale_seatprice": 35,
+            "sale_surcharge": 5
+          },
+          {
+            "absolute_saving": 0,
+            "allows_leaving_single_seats": "never",
+            "discount_code": "NORMAL",
+            "discount_desc": "Regular Ticket",
+            "is_offer": false,
+            "non_offer_sale_seatprice": 30,
+            "non_offer_sale_surcharge": 5,
+            "number_available": 6,
+            "percentage_saving": 0,
+            "price_band_code": "B/pool",
+            "sale_seatprice": 30,
+            "sale_surcharge": 5
+          }
+        ],
+        "ticket_type_code": "CIRCLE",
+        "ticket_type_desc": "Dress Circle"
+      }
+    ]
+  },
+  "backend_is_broken": false,
+  "backend_is_down": false,
+  "backend_throttle_failed": false,
+  "contiguous_seat_selection_only": true,
+  "currency_code": "gbp",
+  "currency_details": {
+    "gbp": {
+      "currency_code": "gbp",
+      "currency_factor": 100,
+      "currency_number": 826,
+      "currency_places": 2,
+      "currency_post_symbol": "",
+      "currency_pre_symbol": "£"
+    }
+  },
+  "valid_quantities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}

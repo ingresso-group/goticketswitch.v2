@@ -1,0 +1,26 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.8
+    steps:
+      - checkout
+      - run:
+          name: go get
+          command: go get -t -d -v ./...
+      - run:
+          name: coverage
+          command: go test -race -coverprofile=coverage.txt -covermode=atomic
+      - run:
+          name: Report code coverage
+          command: bash <(curl -s https://codecov.io/bash) -t "097f6f1f-d9b5-4f8c-b101-edb9bbb013ac" || echo "Coverage not reported"
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
