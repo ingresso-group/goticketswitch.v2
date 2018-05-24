@@ -1,5 +1,6 @@
 package ticketswitch
 
+// Currency contains the information about a currency.
 type Currency struct {
 	//  ISO 4217 currency code.
 	Code string `json:"currency_code"`

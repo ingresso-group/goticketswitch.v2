@@ -1,5 +1,13 @@
 package ticketswitch
 
+// GeoData contains the longitude and latitude of the Venue
+type GeoData struct {
+	// latitude of the venue.
+	Latitude float64 `json:"latitude"`
+	// longitude of the venue.
+	Longitude float64 `json:"longitude"`
+}
+
 // Event represents a product in the ticketswitch system.
 type Event struct {
 	// the identifier for the event.
@@ -23,6 +31,8 @@ type Event struct {
 	Filters []string `json:"custom_filter"`
 	// venue post code.
 	Postcode string `json:"postcode"`
+	// venue geographical data.
+	GeoData GeoData `json:"geo_data"`
 	// human readable venue city.
 	City string `json:"city_desc"`
 	// venue city code
@@ -31,10 +41,6 @@ type Event struct {
 	Country string `json:"country_desc"`
 	// ISO 3166-1 country code.
 	CountryCode string `json:"country_code"`
-	// latitude of the venue.
-	Latitude float64 `json:"latitude"`
-	// longitude of the venue.
-	Longitude float64 `json:"longitude"`
 	// maximum running time of a performance in minutes.
 	MaxRunningTime int `json:"max_running_time"`
 	// minimum running time of a performance in minutes.
@@ -42,8 +48,8 @@ type Event struct {
 	// indicates that the performance time for this event is relevant and
 	// should be shown.
 	ShowPerformanceTime bool `json:"show_perf_time"`
-	// indicates that the event has performances.
-	HasPerformances bool `json:"has_performances"`
+	// indicates that the event has no performances.
+	HasNoPerformances bool `json:"has_no_perfs"`
 	// indicates the event is seated.
 	IsSeated bool `json:"is_seated"`
 	// indicates that ticket purchases for this event will require a departure

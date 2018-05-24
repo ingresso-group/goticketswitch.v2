@@ -1,0 +1,153 @@
+{
+  "allowed_countries": {
+    "ad": "Andorra",
+    "uk": "United Kingdom",
+    "uy": "Uruguay"
+  },
+  "can_edit_address": true,
+  "currency_details": {
+    "gbp": {
+      "currency_code": "gbp",
+      "currency_factor": 100,
+      "currency_number": 826,
+      "currency_places": 2,
+      "currency_post_symbol": "",
+      "currency_pre_symbol": "£"
+    }
+  },
+  "input_contained_unavailable_order" : false,
+  "language_list" : [
+     "en"
+  ],
+  "minutes_left_on_reserve": 15,
+  "needs_agent_reference": false,
+  "needs_email_address": false,
+  "needs_payment_card": false,
+  "prefilled_address": {
+    "country_code": "uk"
+  },
+  "reserve_iso8601_date_and_time" : "2018-05-24T15:13:07Z",
+  "transaction_status" : "reserved",
+  "trolley_contents": {
+    "bundle": [
+      {
+        "bundle_order_count": 1,
+        "bundle_source_code": "ext_test0",
+        "bundle_source_desc": "External Test Backend 0",
+        "bundle_total_cost": 76.5,
+        "bundle_total_seatprice": 75,
+        "bundle_total_send_cost": 1.5,
+        "bundle_total_surcharge": 0,
+        "currency_code": "gbp",
+        "order": [
+          {
+            "event": {
+              "city_code": "london-uk",
+              "city_desc": "London",
+              "classes": {
+                "dance": "Ballet & Dance"
+              },
+              "country_code": "uk",
+              "country_desc": "United Kingdom",
+              "critic_review_percent": 100,
+              "custom_filter": [],
+              "event_desc": "Matthew Bourne's Nutcracker TEST",
+              "event_id": "6IF",
+              "event_path": "/6IF-matthew-bourne-s-nutcracker-test/",
+              "event_status": "live",
+              "event_type": "simple_ticket",
+              "event_upsell_list": {
+                "event_id": [
+                  "6IE",
+                  "MH0"
+                ]
+              },
+              "event_uri_desc": "Matthew-Bourne%27s-Nutcracker-TEST",
+              "geo_data": {
+                "latitude": 51.52961137,
+                "longitude": -0.10601562
+              },
+              "has_no_perfs": false,
+              "is_seated": true,
+              "max_running_time": 120,
+              "min_running_time": 120,
+              "need_departure_date": false,
+              "need_duration": false,
+              "need_performance": true,
+              "postcode": "EC1R 4TN",
+              "show_perf_time": true,
+              "source_code": "ext_test0",
+              "source_desc": "External Test Backend 0",
+              "user_review_percent": 100,
+              "venue_desc": "Sadler's Wells",
+              "venue_uri_desc": "Sadler%27s-Wells"
+            },
+            "got_requested_seats": false,
+            "item_number": 1,
+            "performance": {
+              "date_desc": "Tue, 13th June 2017",
+              "event_id": "6IF",
+              "has_pool_seats": true,
+              "is_ghost": false,
+              "is_limited": false,
+              "iso8601_date_and_time": "2017-06-13T19:30:00+01:00",
+              "perf_id": "6IF-B1S",
+              "perf_name": "Including back stage pass",
+              "running_time": 120,
+              "time_desc": "7.30 PM"
+            },
+            "price_band_code": "C/pool",
+            "send_method": {
+              "send_code": "COBO",
+              "send_cost": 1.5,
+              "send_desc": "Collect from the venue",
+              "send_type": "collect"
+            },
+            "ticket_orders": {
+              "ticket_order": [
+                {
+                  "discount_code": "ADULT",
+                  "discount_desc": "Adult",
+                  "no_of_seats": 3,
+                  "sale_seatprice": 25,
+                  "sale_surcharge": 0,
+                  "seats": [
+                    {
+                      "col_id": "424",
+                      "full_id": "GL424",
+                      "is_restricted_view": false,
+                      "row_id": "GL"
+                    },
+                    {
+                      "col_id": "421",
+                      "full_id": "GL421",
+                      "is_restricted_view": false,
+                      "row_id": "GL"
+                    },
+                    {
+                      "col_id": "418",
+                      "full_id": "GL418",
+                      "is_restricted_view": false,
+                      "row_id": "GL"
+                    }
+                  ],
+                  "total_sale_seatprice": 75,
+                  "total_sale_surcharge": 0
+                }
+              ]
+            },
+            "ticket_type_code": "CIRCLE",
+            "ticket_type_desc": "Upper circle",
+            "total_no_of_seats": 3,
+            "total_sale_seatprice": 75,
+            "total_sale_surcharge": 0
+          }
+        ]
+      }
+    ],
+    "transaction_uuid": "e18c20fc-042e-11e7-975c-002590326962",
+    "trolley_bundle_count": 1,
+    "trolley_order_count": 1
+  },
+  "unreserved_orders": []
+}
