@@ -24,4 +24,17 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Printf("%+v", sources)
+
+	reserveParams := &ticketswitch.MakeReservationParams{
+		PerformanceID:  "7AB-5",
+		PriceBandCode:  "B/pool",
+		TicketTypeCode: "CIRCLE",
+		NumberOfSeats:  2,
+		Seats:          []string{"A1", "A2"},
+	}
+	reservation, err := client.MakeReservation(reserveParams)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%+v", reservation)
 }
