@@ -853,13 +853,58 @@ func TestListPerformances(t *testing.T) {
 
 	if assert.Nil(t, err) {
 		assert.True(t, results.HasPerfNames)
-		assert.True(t, results.AutoSelect)
 		assert.Equal(t, 10, results.PagingStatus.PageLength)
 		assert.Equal(t, 2, results.PagingStatus.PageNumber)
 		perfs := results.Performances
 		assert.Len(t, perfs, 2)
 		assert.Equal(t, perfs[0].ID, "ABCD-1")
 		assert.Equal(t, perfs[1].ID, "ABCD-2")
+	}
+}
+
+func TestListPerformancesSingleResult(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/performances.v1", r.URL.Path)
+			r.ParseForm()
+			assert.Equal(t, "20150403:20150607", r.Form.Get("date_range"))
+			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
+			w.Write([]byte(`{
+				"autoselect_this_performance": true,
+				"results": {
+					"has_perf_names": false,
+					"performance": [
+						{
+							"event_id": "ABCD",
+							"has_pool_seats": true,
+							"is_ghost": false,
+							"is_limited": false,
+							"perf_id": "ABCD-1"
+						}
+					]
+				}
+			}`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ListPerformancesParams{
+		EventID:   "ABCD",
+		StartDate: time.Date(2015, 4, 3, 2, 1, 0, 0, time.UTC),
+		EndDate:   time.Date(2015, 6, 7, 8, 9, 0, 0, time.UTC),
+	}
+	results, err := client.ListPerformances(params)
+
+	if assert.Nil(t, err) {
+		assert.False(t, results.HasPerfNames)
+		perfs := results.Performances
+		assert.Len(t, perfs, 1)
+		assert.Equal(t, perfs[0].ID, "ABCD-1")
 	}
 }
 

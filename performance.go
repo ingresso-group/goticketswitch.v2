@@ -48,13 +48,19 @@ type ListPerformancesResults struct {
 	// indicates that the related performances have names
 	HasPerfNames bool `json:"has_perf_names"`
 
-	// indicates that the performance list will contain only one performance
-	// and this performance should be automatically selected for the customer.
-	AutoSelect bool `json:"auto_select"`
-
 	// the current status of the pagination of the result set
 	PagingStatus PagingStatus `json:"paging_status"`
 
 	// performances returned by the call
 	Performances []Performance `json:"performance"`
+}
+
+// ListPerformancesTopLevel is the top level of the json response from a ListPerformance call
+type ListPerformancesTopLevel struct {
+	// indicates that the performance list will contain only one performance
+	// and this performance should be automatically selected for the customer.
+	AutoSelect bool `json:"autoselect_this_performance"`
+
+	// contains the ListPerformancesResults
+	Results ListPerformancesResults `json:"results"`
 }

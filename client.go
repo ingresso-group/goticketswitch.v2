@@ -473,19 +473,14 @@ func (client *Client) ListPerformances(params *ListPerformancesParams) (*ListPer
 		return nil, err
 	}
 
-	var doc map[string]ListPerformancesResults
+	var doc ListPerformancesTopLevel
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&doc)
 	if err != nil {
 		return nil, err
 	}
 
-	results, ok := doc["results"]
-	if !ok {
-		return nil, errors.New("ticketswitch: no results in ListPerformances response")
-	}
-
-	return &results, nil
+	return &doc.Results, nil
 }
 
 // GetAvailability fetches availability for a performce from the API
