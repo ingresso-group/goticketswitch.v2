@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -970,7 +971,7 @@ func TestGetAvailability(t *testing.T) {
 }
 
 func TestGetSources(t *testing.T) {
-	sourcesJson, error := ioutil.ReadFile("test_data/sources.json")
+	sourcesJSON, error := ioutil.ReadFile("test_data/sources.json")
 	if error != nil {
 		t.Fatalf("Cannot find test_data/sources.json")
 	}
@@ -978,7 +979,7 @@ func TestGetSources(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/sources.v1", r.URL.Path)
 			r.ParseForm()
-			w.Write(sourcesJson)
+			w.Write(sourcesJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1003,7 +1004,7 @@ func TestGetSources(t *testing.T) {
 }
 
 func TestGetSourcesWithReqSrcInfo(t *testing.T) {
-	sourcesJson, error := ioutil.ReadFile("test_data/sources_req_src_info.json")
+	sourcesJSON, error := ioutil.ReadFile("test_data/sources_req_src_info.json")
 	if error != nil {
 		t.Fatalf("Cannot find test_data/sources_req_src_info.json")
 	}
@@ -1011,7 +1012,7 @@ func TestGetSourcesWithReqSrcInfo(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/sources.v1", r.URL.Path)
 			r.ParseForm()
-			w.Write(sourcesJson)
+			w.Write(sourcesJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1082,4 +1083,112 @@ func TestGetSourcesError(t *testing.T) {
 
 	assert.Nil(t, results)
 	assert.Equal(t, err.Error(), "ticketswitch: API error 8: Bad data supplied")
+}
+
+func TestMakeReservation(t *testing.T) {
+	reservationJSON, error := ioutil.ReadFile("test_data/reservation.json")
+	if error != nil {
+		t.Fatalf("Cannot find test_data/reservation.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/reserve.v1", r.URL.Path)
+			r.ParseForm()
+			w.Write(reservationJSON)
+		}))
+	defer server.Close()
+
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	params := &MakeReservationParams{
+		PerformanceID:  "6IF-B1S",
+		PriceBandCode:  "C/pool",
+		TicketTypeCode: "CIRCLE",
+		NumberOfSeats:  3,
+		Discounts:      []string{"ADULT", "CHILD", "CHILD"},
+	}
+
+	client := NewClient(config)
+	results, err := client.MakeReservation(params)
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, results.AllowedCountries["ad"], "Andorra")
+		assert.Equal(t, results.AllowedCountries["uk"], "United Kingdom")
+		assert.Equal(t, results.AllowedCountries["uy"], "Uruguay")
+		assert.True(t, results.CanEditAddress)
+		assert.Equal(t, results.CurrencyDetails["gbp"].Code, "gbp")
+		assert.False(t, results.InputContainedUnavailableOrder)
+		assert.Equal(t, results.LanguageList[0], "en")
+		assert.Equal(t, results.MinutesLeftOnReserve, 15.0)
+		assert.False(t, results.NeedsAgentReference)
+		assert.False(t, results.NeedsEmailAddress)
+		assert.False(t, results.NeedsPaymentCard)
+		assert.Equal(t, results.PrefilledAddress["country_code"], "uk")
+		assert.Equal(t, results.ReserveTime, time.Date(2018, 5, 24, 15, 13, 7, 0, time.UTC))
+		assert.Equal(t, results.TransactionStatus, "reserved")
+		assert.Equal(t, results.Trolley.TransactionUUID, "e18c20fc-042e-11e7-975c-002590326962")
+		assert.Equal(t, len(results.Trolley.Bundles), results.Trolley.BundleCount)
+		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(76.5))
+		assert.Equal(t, len(results.Trolley.Bundles[0].Orders), 1)
+		assert.Equal(t, len(results.Trolley.Bundles[0].Orders[0].TicketOrdersHolder.TicketOrders), 1)
+		assert.Equal(t, len(results.Trolley.Bundles[0].Orders[0].TicketOrdersHolder.TicketOrders[0].Seats), 3)
+	}
+}
+
+func TestMakeReservationFailure(t *testing.T) {
+	reservationJSON, error := ioutil.ReadFile("test_data/reservation_failure.json")
+	if error != nil {
+		t.Fatalf("Cannot find test_data/reservation_failure.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/reserve.v1", r.URL.Path)
+			r.ParseForm()
+			w.Write(reservationJSON)
+		}))
+	defer server.Close()
+
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	params := &MakeReservationParams{
+		PerformanceID:  "7AB-5",
+		PriceBandCode:  "B/pool",
+		TicketTypeCode: "CIRCLE",
+		NumberOfSeats:  2,
+		Seats:          []string{"H9", "H10"},
+	}
+
+	client := NewClient(config)
+	results, err := client.MakeReservation(params)
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, results.AllowedCountries["ad"], "Andorra")
+		assert.Equal(t, results.AllowedCountries["uk"], "United Kingdom")
+		assert.Equal(t, results.AllowedCountries["zw"], "Zimbabwe")
+		assert.True(t, results.CanEditAddress)
+		assert.Equal(t, results.CurrencyDetails["gbp"].Code, "gbp")
+		assert.False(t, results.InputContainedUnavailableOrder)
+		assert.Equal(t, results.LanguageList[0], "en")
+		assert.Equal(t, results.MinutesLeftOnReserve, 15.0)
+		assert.False(t, results.NeedsAgentReference)
+		assert.False(t, results.NeedsEmailAddress)
+		assert.False(t, results.NeedsPaymentCard)
+		assert.Equal(t, results.ReserveTime, time.Date(2018, 5, 24, 15, 45, 49, 0, time.UTC))
+		assert.Equal(t, results.TransactionStatus, "reserved")
+		assert.Equal(t, results.Trolley.TransactionUUID, "U-8841ADC8-5F69-11E8-A0DD-AC1F6B466128-EC1A0BEE-LDNX")
+		assert.Equal(t, len(results.Trolley.Bundles), results.Trolley.BundleCount)
+		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(20))
+		assert.Equal(t, len(results.Trolley.Bundles[0].Orders), 0)
+		assert.Equal(t, len(results.UnreservedOrders), 1)
+		assert.Equal(t, results.UnreservedOrders[0].ItemNumber, 1)
+		assert.Equal(t, results.UnreservedOrders[0].RequestedSeatIDs, []string{"H9", "H10"})
+	}
 }

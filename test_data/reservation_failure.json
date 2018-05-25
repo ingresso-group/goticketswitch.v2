@@ -1,0 +1,129 @@
+{
+  "allowed_countries": {
+    "ad": "Andorra",
+    "uk": "United Kingdom",
+    "zw": "Zimbabwe"
+  },
+  "can_edit_address": true,
+  "currency_details": {
+    "gbp": {
+      "currency_code": "gbp",
+      "currency_factor": 100,
+      "currency_number": 826,
+      "currency_places": 2,
+      "currency_post_symbol": "",
+      "currency_pre_symbol": "\u00a3"
+    }
+  },
+  "input_contained_unavailable_order": false,
+  "language_list": [
+    "en"
+  ],
+  "minutes_left_on_reserve": 15.0,
+  "needs_agent_reference": false,
+  "needs_email_address": false,
+  "needs_payment_card": false,
+  "prefilled_address": {},
+  "reserve_iso8601_date_and_time": "2018-05-24T15:45:49Z",
+  "transaction_status": "reserved",
+  "trolley_contents": {
+    "bundle": [
+      {
+        "bundle_order_count": 1,
+        "bundle_source_code": "ext_test1",
+        "bundle_source_desc": "External Test Backend 1",
+        "bundle_total_cost": 20.0,
+        "bundle_total_seatprice": 20.0,
+        "bundle_total_send_cost": 0.0,
+        "bundle_total_surcharge": 0.0,
+        "currency_code": "gbp",
+        "order": []
+      }
+    ],
+    "transaction_uuid": "U-8841ADC8-5F69-11E8-A0DD-AC1F6B466128-EC1A0BEE-LDNX",
+    "trolley_bundle_count": 1,
+    "trolley_order_count": 1
+  },
+  "unreserved_orders": [
+    {
+      "event": {
+        "city_code": "london-uk",
+        "city_desc": "London",
+        "classes": {
+          "theatre": "Theatre"
+        },
+        "country_code": "uk",
+        "country_desc": "United Kingdom",
+        "custom_filter": [],
+        "event_desc": "TEST EVENT - The Unremarkable Incident of the Cat at Lunchtime",
+        "event_id": "7AB",
+        "event_path": "/7AB-test-event-the-unremarkable-incident-of-the-cat-at-lunchtime/",
+        "event_status": "live",
+        "event_type": "simple_ticket",
+        "event_upsell_list": {
+          "event_id": [
+            "7AA",
+            "6IF"
+          ]
+        },
+        "event_uri_desc": "TEST-EVENT-The-Unremarkable-Incident-of-the-Cat-at-Lunchtime",
+        "geo_data": {
+          "latitude": 51.49306,
+          "longitude": -0.22639
+        },
+        "has_no_perfs": false,
+        "is_add_on": false,
+        "is_auto_quantity_add_on": false,
+        "is_seated": true,
+        "max_running_time": 90,
+        "min_running_time": 90,
+        "need_departure_date": false,
+        "need_duration": false,
+        "need_performance": true,
+        "postcode": "W6 7ES",
+        "show_perf_time": true,
+        "source_code": "ext_test1",
+        "source_desc": "External Test Backend 1",
+        "venue_desc": "Lyric Apollo",
+        "venue_uri_desc": "Lyric-Apollo"
+      },
+      "item_number": 1,
+      "performance": {
+        "date_desc": "Tue, 1st January 2019",
+        "event_id": "7AB",
+        "has_pool_seats": true,
+        "is_ghost": false,
+        "is_limited": false,
+        "iso8601_date_and_time": "2019-01-01T15:30:00Z",
+        "perf_id": "7AB-5",
+        "running_time": 90,
+        "time_desc": "3.30 PM"
+      },
+      "price_band_code": "B/pool",
+      "requested_seat_ids": [
+        "H9",
+        "H10"
+      ],
+      "reserve_failure_comment": "Seat H10 causes failure.",
+      "seat_request_status": "got_none",
+      "ticket_orders": {
+        "ticket_order": [
+          {
+            "discount_code": "NORMAL",
+            "discount_desc": "Regular Ticket",
+            "no_of_seats": 2,
+            "sale_seatprice": 30.0,
+            "sale_surcharge": 5.0,
+            "total_sale_seatprice": 60.0,
+            "total_sale_surcharge": 10.0
+          }
+        ]
+      },
+      "ticket_type_code": "CIRCLE",
+      "ticket_type_desc": "Dress Circle",
+      "total_no_of_seats": 2,
+      "total_sale_seatprice": 60.0,
+      "total_sale_surcharge": 10.0
+    }
+  ]
+}

@@ -506,7 +506,7 @@ func (client *Client) GetAvailability(perf string, params *GetAvailabilityParams
 	return &results, nil
 }
 
-// Get the available sources
+// Get the available sources (a.k.a. backend systems)
 func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error) {
 	req := NewRequest(http.MethodGet, "sources.v1", nil)
 	if params != nil {
@@ -528,4 +528,26 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 	sourcesResult := &SourcesResult{Sources: sources}
 
 	return sourcesResult, nil
+}
+
+// Make a reservation
+func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReservationResult, error) {
+	req := NewRequest(http.MethodPost, "reserve.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var reservation MakeReservationResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	return &reservation, nil
 }
