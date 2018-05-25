@@ -506,7 +506,8 @@ func (client *Client) GetAvailability(perf string, params *GetAvailabilityParams
 	return &results, nil
 }
 
-// Get the available sources (a.k.a. backend systems)
+// GetSources fetches the available sources (a.k.a. backend systems) from the
+// API
 func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error) {
 	req := NewRequest(http.MethodGet, "sources.v1", nil)
 	if params != nil {
@@ -530,12 +531,9 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 	return sourcesResult, nil
 }
 
-// Make a reservation
+// MakeReservation places a hold on products in the inventory via the API
 func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReservationResult, error) {
-	req := NewRequest(http.MethodPost, "reserve.v1", nil)
-	if params != nil {
-		req.SetValues(params.Params())
-	}
+	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -550,4 +548,49 @@ func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReser
 	}
 
 	return &reservation, nil
+}
+
+// ReleaseReservationParams are parameters that can be passed into the
+// ReleaseReservation call.
+type ReleaseReservationParams struct {
+	UniversalParams
+	TransactionUUID string
+}
+
+// Params returns the call parameters as a map
+func (params *ReleaseReservationParams) Params() map[string]string {
+	values := map[string]string{
+		"transaction_uuid": params.TransactionUUID,
+	}
+
+	for k, v := range params.Universal() {
+		values[k] = v
+	}
+	return values
+
+}
+
+// ReleaseReservation makes a best effort attempt to release any reservations
+// made on backend systems for a transaction.
+func (client *Client) ReleaseReservation(params *ReleaseReservationParams) (success bool, err error) {
+	req := NewRequest(http.MethodPost, "release.v1", params.Params())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+
+	var result map[string]bool
+	decoder := json.NewDecoder(resp.Body)
+	if err = decoder.Decode(&result); err != nil {
+		return false, err
+	}
+
+	ok, success := result["released_ok"]
+
+	if !ok {
+		success = false
+	}
+
+	return success, nil
 }

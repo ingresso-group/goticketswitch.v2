@@ -1,6 +1,7 @@
 package ticketswitch
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -936,7 +937,7 @@ func TestListPerformances_error(t *testing.T) {
 }
 
 func TestGetAvailability(t *testing.T) {
-	availabilityJson, error := ioutil.ReadFile("test_data/availability.json")
+	availabilityJSON, error := ioutil.ReadFile("test_data/availability.json")
 	if error != nil {
 		t.Fatalf("Cannot find test_data/availability.json")
 	}
@@ -944,7 +945,7 @@ func TestGetAvailability(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/availability.v1", r.URL.Path)
 			r.ParseForm()
-			w.Write(availabilityJson)
+			w.Write(availabilityJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1190,5 +1191,69 @@ func TestMakeReservationFailure(t *testing.T) {
 		assert.Equal(t, len(results.UnreservedOrders), 1)
 		assert.Equal(t, results.UnreservedOrders[0].ItemNumber, 1)
 		assert.Equal(t, results.UnreservedOrders[0].RequestedSeatIDs, []string{"H9", "H10"})
+	}
+}
+
+func TestReleaseReservationParams_Params(t *testing.T) {
+	params := ReleaseReservationParams{
+		UniversalParams: UniversalParams{
+			TrackingID: "abc123",
+		},
+		TransactionUUID: "acb71e1e-20aa-4c74-a607-7d3580b08130",
+	}
+	values := params.Params()
+	assert.Equal(t, "acb71e1e-20aa-4c74-a607-7d3580b08130", values["transaction_uuid"])
+	assert.Equal(t, "abc123", values["custom_tracking_id"])
+}
+
+func TestReleaseReservation_success(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/release.v1", r.URL.Path)
+			assert.Equal(t, http.MethodPost, r.Method)
+			var inputs map[string]interface{}
+			decoder := json.NewDecoder(r.Body)
+			if err := decoder.Decode(&inputs); err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
+			w.Write([]byte(`{"released_ok": true}`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ReleaseReservationParams{
+		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+	}
+	success, err := client.ReleaseReservation(params)
+	if assert.Nil(t, err) {
+		assert.True(t, success)
+	}
+}
+
+func TestReleaseReservation_failed(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(`{"released_ok": false}`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ReleaseReservationParams{
+		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+	}
+	success, err := client.ReleaseReservation(params)
+	if assert.Nil(t, err) {
+		assert.False(t, success)
 	}
 }
