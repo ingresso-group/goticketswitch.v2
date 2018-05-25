@@ -594,3 +594,63 @@ func (client *Client) ReleaseReservation(params *ReleaseReservationParams) (succ
 
 	return success, nil
 }
+
+// MakePurchaseParams are the parameters that are passed into the MakePurchase
+// call. A purchase must include the transaction UUID for an existing reserved
+// transaction and some customer information. Optionally a payment method can
+// be specified to provide payment details to the API when not purchasing on
+// credit. If you require the API to send a confirmation email then set the
+// SendConfirmationEmail flag to true (requires an email address to be
+// specified in the customer information).
+type MakePurchaseParams struct {
+	UniversalParams
+	TransactionUUID       string
+	Customer              Customer
+	PaymentMethod         PaymentMethod
+	SendConfirmationEmail bool
+}
+
+// Params returns the parameters needed to make the purchase call.
+func (params *MakePurchaseParams) Params() map[string]string {
+	values := map[string]string{
+		"transaction_uuid": params.TransactionUUID,
+	}
+
+	if params.SendConfirmationEmail {
+		values["send_confirmation_email"] = "1"
+	}
+
+	for k, v := range params.Customer.Params() {
+		values[k] = v
+	}
+
+	if params.PaymentMethod != nil {
+		for k, v := range params.PaymentMethod.PaymentParams() {
+			values[k] = v
+		}
+	}
+	for k, v := range params.Universal() {
+		values[k] = v
+	}
+	return values
+}
+
+// MakePurchase attempts to purchase a previously reserved transaction via the
+// API
+func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseResult, error) {
+	req := NewRequest(http.MethodPost, "purchase.v1", params.Params())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var result MakePurchaseResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

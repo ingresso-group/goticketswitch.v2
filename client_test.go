@@ -1257,3 +1257,115 @@ func TestReleaseReservation_failed(t *testing.T) {
 		assert.False(t, success)
 	}
 }
+
+type FakePaymentMethod map[string]string
+
+func (fake FakePaymentMethod) PaymentParams() map[string]string {
+	return fake
+}
+
+func TestMakePurchaseParams_without_payment_method(t *testing.T) {
+	params := MakePurchaseParams{
+		UniversalParams: UniversalParams{
+			TrackingID: "abc123",
+		},
+		TransactionUUID: "797aeb33-5199-4457-bfa1-cd505b6943b4",
+		Customer: Customer{
+			FirstName: "Barney",
+			LastName:  "Rubble",
+		},
+		SendConfirmationEmail: true,
+	}
+
+	values := params.Params()
+	assert.Equal(t, "797aeb33-5199-4457-bfa1-cd505b6943b4", values["transaction_uuid"])
+	assert.Equal(t, "abc123", values["custom_tracking_id"])
+	assert.Equal(t, "Barney", values["first_name"])
+	assert.Equal(t, "Rubble", values["last_name"])
+	assert.Equal(t, "1", values["send_confirmation_email"])
+}
+
+func TestMakePurchaseParams_with_payment_method(t *testing.T) {
+	params := MakePurchaseParams{
+		PaymentMethod: FakePaymentMethod{
+			"foo": "bar",
+			"lol": "beans",
+		},
+	}
+
+	values := params.Params()
+	assert.Equal(t, "bar", values["foo"])
+	assert.Equal(t, "beans", values["lol"])
+}
+
+func TestMakePurchase_success(t *testing.T) {
+	data, error := ioutil.ReadFile("test_data/purchase-credit-success.json")
+	if error != nil {
+		t.Fatalf("test_data/purchase-credit-success.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/purchase.v1", r.URL.Path)
+			assert.Equal(t, http.MethodPost, r.Method)
+			var inputs map[string]interface{}
+			decoder := json.NewDecoder(r.Body)
+			if err := decoder.Decode(&inputs); err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
+			w.Write([]byte(data))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &MakePurchaseParams{
+		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+	}
+	result, err := client.MakePurchase(params)
+	if assert.Nil(t, err) {
+		assert.Equal(t, "purchased", result.Status)
+		assert.Nil(t, result.Callout)
+		assert.Nil(t, result.Callout)
+		assert.Equal(t, map[string]Currency{
+			"gbp": Currency{
+				Code:       "gbp",
+				Places:     2,
+				Factor:     100,
+				PreSymbol:  "£",
+				PostSymbol: "",
+				Number:     826,
+			},
+		}, result.Currency)
+		assert.Equal(t, &Customer{
+			FirstName:      "Test",
+			LastName:       "Tester",
+			AddressLineOne: "Metro Building",
+			AddressLineTwo: "1 Butterwick",
+			CountryCode:    "uk",
+			EmailAddress:   "testing@gmail.com",
+			WorkPhone:      "0203 137 7420",
+			HomePhone:      "0203 137 7420",
+			Postcode:       "W6 8DL",
+			Town:           "London",
+			SupplierCanUseCustomerData: false,
+			UserCanUseCustomerData:     true,
+			WorldCanUseCustomerData:    false,
+		}, result.Customer)
+		expectedReserve := time.Date(2017, 4, 12, 8, 38, 20, 0, time.UTC)
+		assert.Equal(t, &expectedReserve, result.ReserveDateAndTime)
+		expectedPurchase := time.Date(2017, 4, 12, 8, 38, 35, 0, time.UTC)
+		assert.Equal(t, &expectedPurchase, result.PurchaseDateAndTime)
+		assert.Equal(t, []string{
+			"en-gb",
+			"en",
+			"en-us",
+			"nl",
+		}, result.Languages)
+	}
+
+}
