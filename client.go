@@ -532,7 +532,7 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 }
 
 // MakeReservation places a hold on products in the inventory via the API
-func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReservationResult, error) {
+func (client *Client) MakeReservation(params *MakeReservationParams) (*ReservationResult, error) {
 	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())
 
 	resp, err := client.Do(req)
@@ -540,7 +540,7 @@ func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReser
 		return nil, err
 	}
 
-	var reservation MakeReservationResult
+	var reservation ReservationResult
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&reservation)
 	if err != nil {

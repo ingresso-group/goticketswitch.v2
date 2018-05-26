@@ -7,7 +7,7 @@ import (
 )
 
 // ReservationResult contains the results of MakeReservation call
-type MakeReservationResult struct {
+type ReservationResult struct {
 	AllowedCountries               map[string]string   `json:"allowed_countries"`
 	CanEditAddress                 bool                `json:"can_edit_address"`
 	CurrencyDetails                map[string]Currency `json:"currency_details"`
@@ -24,6 +24,7 @@ type MakeReservationResult struct {
 	UnreservedOrders               []Order             `json:"unreserved_orders"`
 }
 
+// MakeReservationParams stores the parameters for making a reservation
 type MakeReservationParams struct {
 	UniversalParams
 	DepartureDate  time.Time
