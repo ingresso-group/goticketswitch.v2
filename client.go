@@ -550,15 +550,15 @@ func (client *Client) MakeReservation(params *MakeReservationParams) (*Reservati
 	return &reservation, nil
 }
 
-// ReleaseReservationParams are parameters that can be passed into the
-// ReleaseReservation call.
-type ReleaseReservationParams struct {
+// TransactionParams are parameters that can be passed into the
+// Transaction call.
+type TransactionParams struct {
 	UniversalParams
 	TransactionUUID string
 }
 
 // Params returns the call parameters as a map
-func (params *ReleaseReservationParams) Params() map[string]string {
+func (params *TransactionParams) Params() map[string]string {
 	values := map[string]string{
 		"transaction_uuid": params.TransactionUUID,
 	}
@@ -572,7 +572,7 @@ func (params *ReleaseReservationParams) Params() map[string]string {
 
 // ReleaseReservation makes a best effort attempt to release any reservations
 // made on backend systems for a transaction.
-func (client *Client) ReleaseReservation(params *ReleaseReservationParams) (success bool, err error) {
+func (client *Client) ReleaseReservation(params *TransactionParams) (success bool, err error) {
 	req := NewRequest(http.MethodPost, "release.v1", params.Params())
 
 	resp, err := client.Do(req)
@@ -655,28 +655,8 @@ func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseRes
 	return &result, nil
 }
 
-// GetStatusParams are parameters that can be passed into the
-// GetStatus call.
-type GetStatusParams struct {
-	UniversalParams
-	TransactionUUID string
-}
-
-// Params returns the call parameters as a map
-func (params *GetStatusParams) Params() map[string]string {
-	values := map[string]string{
-		"transaction_uuid": params.TransactionUUID,
-	}
-
-	for k, v := range params.Universal() {
-		values[k] = v
-	}
-	return values
-
-}
-
 // GetStatus retrieves the transaction from the API
-func (client *Client) GetStatus(params *GetStatusParams) (*StatusResult, error) {
+func (client *Client) GetStatus(params *TransactionParams) (*StatusResult, error) {
 	req := NewRequest(http.MethodPost, "status.v1", params.Params())
 
 	resp, err := client.Do(req)

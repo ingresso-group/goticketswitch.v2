@@ -1194,8 +1194,8 @@ func TestMakeReservationFailure(t *testing.T) {
 	}
 }
 
-func TestReleaseReservationParams_Params(t *testing.T) {
-	params := ReleaseReservationParams{
+func TestTransactionParams_Params(t *testing.T) {
+	params := TransactionParams{
 		UniversalParams: UniversalParams{
 			TrackingID: "abc123",
 		},
@@ -1227,7 +1227,7 @@ func TestReleaseReservation_success(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	params := &ReleaseReservationParams{
+	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
 	success, err := client.ReleaseReservation(params)
@@ -1249,7 +1249,7 @@ func TestReleaseReservation_failed(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	params := &ReleaseReservationParams{
+	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
 	success, err := client.ReleaseReservation(params)
@@ -1396,7 +1396,7 @@ func TestGetStatus(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	params := &GetStatusParams{
+	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
 	result, err := client.GetStatus(params)
@@ -1418,6 +1418,11 @@ func TestGetStatus(t *testing.T) {
 		assert.Equal(t, expectedPurchase, result.PurchaseDatetime)
 		assert.Equal(t, []string{"en"}, result.Languages)
 		assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", result.Trolley.TransactionUUID)
+		assert.True(t, result.Trolley.PurchaseResult.Success)
+		assert.False(t, result.Trolley.PurchaseResult.IsPartial)
+		assert.Equal(t, len(result.Trolley.Bundles), 1)
+		assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
+		assert.Equal(t, result.Trolley.Bundles[0].Orders[0].Event.UpsellList.EventIds, []string{"7AA", "6IF"})
 	}
 
 }
