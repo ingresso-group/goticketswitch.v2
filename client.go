@@ -506,7 +506,8 @@ func (client *Client) GetAvailability(perf string, params *GetAvailabilityParams
 	return &results, nil
 }
 
-// Get the available sources (a.k.a. backend systems)
+// GetSources fetches the available sources (a.k.a. backend systems) from the
+// API
 func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error) {
 	req := NewRequest(http.MethodGet, "sources.v1", nil)
 	if params != nil {
@@ -530,19 +531,16 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 	return sourcesResult, nil
 }
 
-// Make a reservation
-func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReservationResult, error) {
-	req := NewRequest(http.MethodPost, "reserve.v1", nil)
-	if params != nil {
-		req.SetValues(params.Params())
-	}
+// MakeReservation places a hold on products in the inventory via the API
+func (client *Client) MakeReservation(params *MakeReservationParams) (*ReservationResult, error) {
+	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())
 
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	var reservation MakeReservationResult
+	var reservation ReservationResult
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&reservation)
 	if err != nil {
@@ -550,4 +548,128 @@ func (client *Client) MakeReservation(params *MakeReservationParams) (*MakeReser
 	}
 
 	return &reservation, nil
+}
+
+// TransactionParams are parameters that can be passed into the
+// Transaction call.
+type TransactionParams struct {
+	UniversalParams
+	TransactionUUID string
+}
+
+// Params returns the call parameters as a map
+func (params *TransactionParams) Params() map[string]string {
+	values := map[string]string{
+		"transaction_uuid": params.TransactionUUID,
+	}
+
+	for k, v := range params.Universal() {
+		values[k] = v
+	}
+	return values
+
+}
+
+// ReleaseReservation makes a best effort attempt to release any reservations
+// made on backend systems for a transaction.
+func (client *Client) ReleaseReservation(params *TransactionParams) (success bool, err error) {
+	req := NewRequest(http.MethodPost, "release.v1", params.Params())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+
+	var result map[string]bool
+	decoder := json.NewDecoder(resp.Body)
+	if err = decoder.Decode(&result); err != nil {
+		return false, err
+	}
+
+	ok, success := result["released_ok"]
+
+	if !ok {
+		success = false
+	}
+
+	return success, nil
+}
+
+// MakePurchaseParams are the parameters that are passed into the MakePurchase
+// call. A purchase must include the transaction UUID for an existing reserved
+// transaction and some customer information. Optionally a payment method can
+// be specified to provide payment details to the API when not purchasing on
+// credit. If you require the API to send a confirmation email then set the
+// SendConfirmationEmail flag to true (requires an email address to be
+// specified in the customer information).
+type MakePurchaseParams struct {
+	UniversalParams
+	TransactionUUID       string
+	Customer              Customer
+	PaymentMethod         PaymentMethod
+	SendConfirmationEmail bool
+}
+
+// Params returns the parameters needed to make the purchase call.
+func (params *MakePurchaseParams) Params() map[string]string {
+	values := map[string]string{
+		"transaction_uuid": params.TransactionUUID,
+	}
+
+	if params.SendConfirmationEmail {
+		values["send_confirmation_email"] = "1"
+	}
+
+	for k, v := range params.Customer.Params() {
+		values[k] = v
+	}
+
+	if params.PaymentMethod != nil {
+		for k, v := range params.PaymentMethod.PaymentParams() {
+			values[k] = v
+		}
+	}
+	for k, v := range params.Universal() {
+		values[k] = v
+	}
+	return values
+}
+
+// MakePurchase attempts to purchase a previously reserved transaction via the
+// API
+func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseResult, error) {
+	req := NewRequest(http.MethodPost, "purchase.v1", params.Params())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var result MakePurchaseResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+// GetStatus retrieves the transaction from the API
+func (client *Client) GetStatus(params *TransactionParams) (*StatusResult, error) {
+	req := NewRequest(http.MethodPost, "status.v1", params.Params())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var result StatusResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

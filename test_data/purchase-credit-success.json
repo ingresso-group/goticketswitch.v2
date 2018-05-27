@@ -1,0 +1,206 @@
+{
+  "currency_details": {
+    "gbp": {
+      "currency_code": "gbp",
+      "currency_factor": 100,
+      "currency_number": 826,
+      "currency_places": 2,
+      "currency_post_symbol": "",
+      "currency_pre_symbol": "£"
+    }
+  },
+  "customer": {
+    "addr_line_one": "Metro Building",
+    "addr_line_one_latin": "Metro Building",
+    "addr_line_two": "1 Butterwick",
+    "addr_line_two_latin": "1 Butterwick",
+    "agent_ref": "",
+    "country": "United Kingdom",
+    "country_code": "uk",
+    "country_latin": "United Kingdom",
+    "county": "",
+    "county_latin": "",
+    "email_addr": "testing@gmail.com",
+    "first_name": "Test",
+    "first_name_latin": "Test",
+    "home_phone": "0203 137 7420",
+    "initials": "",
+    "initials_latin": "",
+    "last_name": "Tester",
+    "last_name_latin": "Tester",
+    "postcode": "W6 8DL",
+    "postcode_latin": "W6 8DL",
+    "suffix": "",
+    "suffix_latin": "",
+    "supplier_can_use_customer_data": false,
+    "title": "",
+    "title_latin": "",
+    "town": "London",
+    "town_latin": "London",
+    "user_can_use_customer_data": true,
+    "work_phone": "0203 137 7420",
+    "world_can_use_customer_data": false
+  },
+  "language_list": [
+    "en-gb",
+    "en",
+    "en-us",
+    "nl"
+  ],
+  "purchase_iso8601_date_and_time": "2017-04-12T08:38:35Z",
+  "reserve_iso8601_date_and_time": "2017-04-12T08:38:20Z",
+  "transaction_status": "purchased",
+  "trolley_contents": {
+    "bundle": [
+      {
+        "bundle_order_count": 1,
+        "bundle_source_code": "ext_test0",
+        "bundle_source_desc": "External Test Backend 0",
+        "bundle_total_cost": 62.5,
+        "bundle_total_seatprice": 51,
+        "bundle_total_send_cost": 1.5,
+        "bundle_total_surcharge": 10,
+        "currency_code": "gbp",
+        "order": [
+          {
+            "backend_purchase_reference": "PURCHASE-6710-1",
+            "event": {
+              "city_code": "london-uk",
+              "city_desc": "London",
+              "classes": {
+                "dance": "Ballet & Dance"
+              },
+              "country_code": "uk",
+              "country_desc": "United Kingdom",
+              "critic_review_percent": 100,
+              "custom_filter": [],
+              "event_desc": "Matthew Bourne's Nutcracker TEST",
+              "event_id": "6IF",
+              "event_path": "/6IF-matthew-bourne-s-nutcracker-test/",
+              "event_status": "live",
+              "event_type": "simple_ticket",
+              "event_upsell_list": {
+                "event_id": [
+                  "6IE",
+                  "MH0"
+                ]
+              },
+              "event_uri_desc": "Matthew-Bourne%27s-Nutcracker-TEST",
+              "geo_data": {
+                "latitude": 51.52961137,
+                "longitude": -0.10601562
+              },
+              "has_no_perfs": false,
+              "is_seated": true,
+              "max_running_time": 120,
+              "min_running_time": 120,
+              "need_departure_date": false,
+              "need_duration": false,
+              "need_performance": true,
+              "postcode": "EC1R 4TN",
+              "show_perf_time": true,
+              "source_code": "ext_test0",
+              "source_desc": "External Test Backend 0",
+              "user_review_percent": 100,
+              "venue_desc": "Sadler's Wells",
+              "venue_uri_desc": "Sadler%27s-Wells"
+            },
+            "got_requested_seats": false,
+            "gross_commission": {
+              "amount_excluding_vat": 7.13,
+              "amount_including_vat": 8.55,
+              "commission_currency_code": "gbp"
+            },
+            "item_number": 1,
+            "performance": {
+              "date_desc": "Tue, 13th June 2017",
+              "event_id": "6IF",
+              "has_pool_seats": true,
+              "is_ghost": false,
+              "is_limited": false,
+              "iso8601_date_and_time": "2017-06-13T19:30:00+01:00",
+              "perf_id": "6IF-B1S",
+              "perf_name": "Including back stage pass",
+              "running_time": 120,
+              "time_desc": "7.30 PM"
+            },
+            "price_band_code": "C/pool",
+            "send_method": {
+              "send_code": "COBO",
+              "send_cost": 1.5,
+              "send_desc": "Collect from the venue",
+              "send_final_type": "collect",
+              "send_type": "collect"
+            },
+            "ticket_orders": {
+              "ticket_order": [
+                {
+                  "discount_code": "ADULT",
+                  "discount_desc": "Adult",
+                  "no_of_seats": 1,
+                  "sale_seatprice": 25,
+                  "sale_surcharge": 4,
+                  "seats": [
+                    {
+                      "col_id": "386",
+                      "full_id": "NM386",
+                      "is_restricted_view": false,
+                      "row_id": "NM"
+                    }
+                  ],
+                  "total_sale_seatprice": 25,
+                  "total_sale_surcharge": 4
+                },
+                {
+                  "discount_code": "CHILD",
+                  "discount_desc": "Child rate",
+                  "no_of_seats": 2,
+                  "sale_seatprice": 13,
+                  "sale_surcharge": 3,
+                  "seats": [
+                    {
+                      "col_id": "383",
+                      "full_id": "NM383",
+                      "is_restricted_view": false,
+                      "row_id": "NM"
+                    },
+                    {
+                      "col_id": "380",
+                      "full_id": "NM380",
+                      "is_restricted_view": false,
+                      "row_id": "NM"
+                    }
+                  ],
+                  "total_sale_seatprice": 26,
+                  "total_sale_surcharge": 6
+                }
+              ]
+            },
+            "ticket_type_code": "CIRCLE",
+            "ticket_type_desc": "Upper circle",
+            "total_no_of_seats": 3,
+            "total_sale_seatprice": 51,
+            "total_sale_surcharge": 10,
+            "user_commission": {
+              "amount_excluding_vat": 3.21,
+              "amount_including_vat": 3.85,
+              "commission_currency_code": "gbp"
+            }
+          }
+        ],
+        "purchase_result": {
+          "is_semi_credit": false,
+          "success": true
+        }
+      }
+    ],
+    "purchase_result": {
+      "is_partial": false,
+      "success": true
+    },
+    "transaction_id": "T000-0000-8RGW-3619",
+    "transaction_uuid": "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+    "trolley_bundle_count": 1,
+    "trolley_order_count": 1
+  }
+}

@@ -8,6 +8,10 @@ type GeoData struct {
 	Longitude float64 `json:"longitude"`
 }
 
+type UpsellList struct {
+	EventIds []string `json:"event_id"`
+}
+
 // Event represents a product in the ticketswitch system.
 type Event struct {
 	// the identifier for the event.
@@ -61,7 +65,7 @@ type Event struct {
 	// performance id.
 	NeedsPerformance bool `json:"needs_performance"`
 	// list of related event id's for upselling.
-	UpsellList []string `json:"upsell_list"`
+	UpsellList UpsellList `json:"event_upsell_list"`
 	// pricing summary from cached availability. Only present when requested.
 	CostRange CostRange `json:"cost_range"`
 	// pricining summary from cached availability. Only present when requested.
