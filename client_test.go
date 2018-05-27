@@ -1123,14 +1123,14 @@ func TestMakeReservation(t *testing.T) {
 		assert.True(t, results.CanEditAddress)
 		assert.Equal(t, results.CurrencyDetails["gbp"].Code, "gbp")
 		assert.False(t, results.InputContainedUnavailableOrder)
-		assert.Equal(t, results.LanguageList[0], "en")
+		assert.Equal(t, results.Languages[0], "en")
 		assert.Equal(t, results.MinutesLeftOnReserve, 15.0)
 		assert.False(t, results.NeedsAgentReference)
 		assert.False(t, results.NeedsEmailAddress)
 		assert.False(t, results.NeedsPaymentCard)
 		assert.Equal(t, results.PrefilledAddress["country_code"], "uk")
 		assert.Equal(t, results.ReserveTime, time.Date(2018, 5, 24, 15, 13, 7, 0, time.UTC))
-		assert.Equal(t, results.TransactionStatus, "reserved")
+		assert.Equal(t, results.Status, "reserved")
 		assert.Equal(t, results.Trolley.TransactionUUID, "e18c20fc-042e-11e7-975c-002590326962")
 		assert.Equal(t, len(results.Trolley.Bundles), results.Trolley.BundleCount)
 		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(76.5))
@@ -1177,13 +1177,13 @@ func TestMakeReservationFailure(t *testing.T) {
 		assert.True(t, results.CanEditAddress)
 		assert.Equal(t, results.CurrencyDetails["gbp"].Code, "gbp")
 		assert.False(t, results.InputContainedUnavailableOrder)
-		assert.Equal(t, results.LanguageList[0], "en")
+		assert.Equal(t, results.Languages[0], "en")
 		assert.Equal(t, results.MinutesLeftOnReserve, 15.0)
 		assert.False(t, results.NeedsAgentReference)
 		assert.False(t, results.NeedsEmailAddress)
 		assert.False(t, results.NeedsPaymentCard)
 		assert.Equal(t, results.ReserveTime, time.Date(2018, 5, 24, 15, 45, 49, 0, time.UTC))
-		assert.Equal(t, results.TransactionStatus, "reserved")
+		assert.Equal(t, results.Status, "reserved")
 		assert.Equal(t, results.Trolley.TransactionUUID, "U-8841ADC8-5F69-11E8-A0DD-AC1F6B466128-EC1A0BEE-LDNX")
 		assert.Equal(t, len(results.Trolley.Bundles), results.Trolley.BundleCount)
 		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(20))
@@ -1330,7 +1330,7 @@ func TestMakePurchase_success(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, "purchased", result.Status)
 		assert.Nil(t, result.Callout)
-		assert.Nil(t, result.Callout)
+		assert.Nil(t, result.PendingCallout)
 		assert.Equal(t, map[string]Currency{
 			"gbp": Currency{
 				Code:       "gbp",
@@ -1341,7 +1341,7 @@ func TestMakePurchase_success(t *testing.T) {
 				Number:     826,
 			},
 		}, result.Currency)
-		assert.Equal(t, &Customer{
+		assert.Equal(t, Customer{
 			FirstName:      "Test",
 			LastName:       "Tester",
 			AddressLineOne: "Metro Building",
@@ -1357,15 +1357,67 @@ func TestMakePurchase_success(t *testing.T) {
 			WorldCanUseCustomerData:    false,
 		}, result.Customer)
 		expectedReserve := time.Date(2017, 4, 12, 8, 38, 20, 0, time.UTC)
-		assert.Equal(t, &expectedReserve, result.ReserveDateAndTime)
+		assert.Equal(t, expectedReserve, result.ReserveDatetime)
 		expectedPurchase := time.Date(2017, 4, 12, 8, 38, 35, 0, time.UTC)
-		assert.Equal(t, &expectedPurchase, result.PurchaseDateAndTime)
+		assert.Equal(t, expectedPurchase, result.PurchaseDatetime)
 		assert.Equal(t, []string{
 			"en-gb",
 			"en",
 			"en-us",
 			"nl",
 		}, result.Languages)
+		assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", result.Trolley.TransactionUUID)
+	}
+
+}
+
+func TestGetStatus(t *testing.T) {
+	data, error := ioutil.ReadFile("test_data/status.json")
+	if error != nil {
+		t.Fatalf("test_data/status.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/status.v1", r.URL.Path)
+			assert.Equal(t, http.MethodPost, r.Method)
+			var inputs map[string]interface{}
+			decoder := json.NewDecoder(r.Body)
+			if err := decoder.Decode(&inputs); err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
+			w.Write([]byte(data))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &GetStatusParams{
+		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+	}
+	result, err := client.GetStatus(params)
+	if assert.Nil(t, err) {
+		assert.Equal(t, "purchased", result.Status)
+		assert.Equal(t, map[string]Currency{
+			"gbp": Currency{
+				Code:       "gbp",
+				Places:     2,
+				Factor:     100,
+				PreSymbol:  "£",
+				PostSymbol: "",
+				Number:     826,
+			},
+		}, result.Currency)
+		expectedReserve := time.Date(2018, 5, 27, 13, 3, 14, 0, time.UTC)
+		assert.Equal(t, expectedReserve, result.ReserveDatetime)
+		expectedPurchase := time.Date(2018, 5, 27, 13, 3, 15, 0, time.UTC)
+		assert.Equal(t, expectedPurchase, result.PurchaseDatetime)
+		assert.Equal(t, []string{"en"}, result.Languages)
+		assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", result.Trolley.TransactionUUID)
 	}
 
 }

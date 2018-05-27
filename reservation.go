@@ -12,14 +12,14 @@ type ReservationResult struct {
 	CanEditAddress                 bool                `json:"can_edit_address"`
 	CurrencyDetails                map[string]Currency `json:"currency_details"`
 	InputContainedUnavailableOrder bool                `json:"input_contained_unavailable_order"`
-	LanguageList                   []string            `json:"language_list"`
+	Languages                      []string            `json:"language_list"`
 	MinutesLeftOnReserve           float64             `json:"minutes_left_on_reserve"`
 	NeedsAgentReference            bool                `json:"needs_agent_reference"`
 	NeedsEmailAddress              bool                `json:"needs_agent_reference"`
 	NeedsPaymentCard               bool                `json:"needs_agent_reference"`
 	PrefilledAddress               map[string]string   `json:"prefilled_address"`
 	ReserveTime                    time.Time           `json:"reserve_iso8601_date_and_time"`
-	TransactionStatus              string              `json:"transaction_status"`
+	Status                         string              `json:"transaction_status"`
 	Trolley                        Trolley             `json:"trolley_contents"`
 	UnreservedOrders               []Order             `json:"unreserved_orders"`
 }

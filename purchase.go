@@ -57,16 +57,16 @@ type Callout struct {
 	ReturnToken     string                 `json:"return_token"`
 }
 
-// PurchaseResult is the result from the MakePurchase client call.
-type PurchaseResult struct {
-	Status              string              `json:"transaction_status"`
-	Callout             *Callout            `json:"callout,omitempty"`
-	PendingCallout      *Callout            `json:"pending_callout,omitempty"`
-	Currency            map[string]Currency `json:"currency_details"`
-	Trolley             *Trolley            `json:"trolley"`
-	Customer            *Customer           `json:"customer"`
-	ReserveDateAndTime  *time.Time          `json:"reserve_iso8601_date_and_time"`
-	PurchaseDateAndTime *time.Time          `json:"purchase_iso8601_date_and_time"`
-	ReserveUser         User                `json:"reserve_user"`
-	Languages           []string            `json:"language_list"`
+// MakePurchaseResult is the result from the MakePurchase client call.
+type MakePurchaseResult struct {
+	Status           string              `json:"transaction_status"`
+	Callout          *Callout            `json:"callout,omitempty"`
+	PendingCallout   *Callout            `json:"pending_callout,omitempty"`
+	Currency         map[string]Currency `json:"currency_details"`
+	Trolley          Trolley             `json:"trolley_contents"`
+	Customer         Customer            `json:"customer"`
+	ReserveDatetime  time.Time           `json:"reserve_iso8601_date_and_time"`
+	PurchaseDatetime time.Time           `json:"purchase_iso8601_date_and_time"`
+	ReserveUser      User                `json:"reserve_user"`
+	Languages        []string            `json:"language_list"`
 }
