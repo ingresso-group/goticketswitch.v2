@@ -57,8 +57,8 @@ type Callout struct {
 	ReturnToken     string                 `json:"return_token"`
 }
 
-// MakePurchaseResult is the result from the MakePurchase client call.
-type MakePurchaseResult struct {
+// PurchaseResult is the result from the MakePurchase client call.
+type PurchaseResult struct {
 	Status              string              `json:"transaction_status"`
 	Callout             *Callout            `json:"callout,omitempty"`
 	PendingCallout      *Callout            `json:"pending_callout,omitempty"`

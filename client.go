@@ -637,7 +637,7 @@ func (params *MakePurchaseParams) Params() map[string]string {
 
 // MakePurchase attempts to purchase a previously reserved transaction via the
 // API
-func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseResult, error) {
+func (client *Client) MakePurchase(params *MakePurchaseParams) (*PurchaseResult, error) {
 	req := NewRequest(http.MethodPost, "purchase.v1", params.Params())
 
 	resp, err := client.Do(req)
@@ -645,7 +645,7 @@ func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseRes
 		return nil, err
 	}
 
-	var result MakePurchaseResult
+	var result PurchaseResult
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&result)
 	if err != nil {
