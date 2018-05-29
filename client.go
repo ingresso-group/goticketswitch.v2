@@ -700,3 +700,37 @@ func (client *Client) GetStatus(params *TransactionParams) (*StatusResult, error
 
 	return &result, nil
 }
+
+// GetMonths returns a summary of the availability across calendar months for a event.
+func (client *Client) GetMonths(params *GetMonthsParams) (*MonthsResult, error) {
+	req := NewRequest(http.MethodGet, "months.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var doc map[string]json.RawMessage
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&doc)
+	if err != nil {
+		return nil, err
+	}
+
+	rawResults, ok := doc["results"]
+	if !ok {
+		return nil, errors.New("ticketswitch: no results in GetMonths response")
+	}
+
+	var results MonthsResult
+	err = json.Unmarshal(rawResults, &results)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &results, nil
+}
