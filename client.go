@@ -531,6 +531,30 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 	return sourcesResult, nil
 }
 
+// GetSendMethods fetches the available send methods for a performance from the
+// API
+func (client *Client) GetSendMethods(perf string, params *UniversalParams) (*SendMethodsResults, error) {
+	req := NewRequest(http.MethodGet, "send_methods.v1", nil)
+	if params != nil {
+		req.SetValues(params.Universal())
+	}
+	req.Values.Set("perf_id", perf)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var results SendMethodsResults
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&results)
+	if err != nil {
+		return nil, err
+	}
+
+	return &results, nil
+}
+
 // MakeReservation places a hold on products in the inventory via the API
 func (client *Client) MakeReservation(params *MakeReservationParams) (*ReservationResult, error) {
 	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())

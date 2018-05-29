@@ -1,0 +1,42 @@
+{
+   "currency_details" : {
+      "gbp" : {
+         "currency_code" : "gbp",
+         "currency_pre_symbol" : "£",
+         "currency_places" : 2,
+         "currency_number" : 826,
+         "currency_factor" : 100,
+         "currency_post_symbol" : ""
+      }
+   },
+   "currency_code" : "gbp",
+   "source_code" : "ext_test0",
+   "send_methods" : {
+      "send_method" : [
+         {
+            "send_type" : "collect",
+            "send_cost" : 1.5,
+            "send_desc" : "Collect from the venue",
+            "send_code" : "COBO"
+         },
+         {
+            "send_code" : "POST",
+            "send_desc" : "Post (UK & Ireland only)",
+            "send_cost" : 3.5,
+            "permitted_countries" : {
+               "country" : [
+                  {
+                     "country_code" : "ie",
+                     "country_desc" : "Ireland"
+                  },
+                  {
+                     "country_code" : "uk",
+                     "country_desc" : "United Kingdom"
+                  }
+               ]
+            },
+            "send_type" : "post"
+         }
+      ]
+   }
+}
