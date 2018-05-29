@@ -1462,3 +1462,60 @@ func TestGetStatus(t *testing.T) {
 	}
 
 }
+
+func TestGetMonths(t *testing.T) {
+	monthsJSON, error := ioutil.ReadFile("test_data/months.json")
+	if error != nil {
+		t.Fatalf("Cannot find test_data/months.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/months.v1", r.URL.Path)
+			r.ParseForm()
+			w.Write(monthsJSON)
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "foo",
+		Password: "bar",
+	}
+
+	params := &GetMonthsParams{
+		EventID: "7AA",
+	}
+
+	client := NewClient(config)
+	results, err := client.GetMonths(params)
+
+	if assert.Nil(t, err) {
+		months := results.Months
+		assert.Len(t, months, 5)
+
+		assert.Equal(t, months[0], Month{
+			Month: "may", MonthDesc: "May", Year: 2018,
+			MonthDatesBitmask: 1610612736, MonthWeekdaysBitmask: 24,
+		})
+
+		assert.Equal(t, months[1], Month{
+			Month: "jun", MonthDesc: "June", Year: 2018,
+			MonthDatesBitmask: 532643581, MonthWeekdaysBitmask: 63,
+		})
+
+		assert.Equal(t, months[2], Month{
+			Month: "jul", MonthDesc: "July", Year: 2018,
+			MonthDatesBitmask: 2012209087, MonthWeekdaysBitmask: 63,
+		})
+
+		assert.Equal(t, months[3], Month{
+			Month: "aug", MonthDesc: "August", Year: 2018,
+			MonthDatesBitmask: 2130574327, MonthWeekdaysBitmask: 63,
+		})
+
+		assert.Equal(t, months[4], Month{
+			Month: "sep", MonthDesc: "September", Year: 2018,
+			MonthDatesBitmask: 64995198, MonthWeekdaysBitmask: 63,
+		})
+
+	}
+}

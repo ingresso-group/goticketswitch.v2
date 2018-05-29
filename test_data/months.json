@@ -1,0 +1,46 @@
+{
+  "results": {
+    "month": [
+      {
+        "month": "may",
+        "month_dates_bitmask": 1610612736,
+        "month_desc": "May",
+        "month_short_desc": "May",
+        "month_weekdays_bitmask": 24,
+        "year": 2018
+      },
+      {
+        "month": "jun",
+        "month_dates_bitmask": 532643581,
+        "month_desc": "June",
+        "month_short_desc": "Jun",
+        "month_weekdays_bitmask": 63,
+        "year": 2018
+      },
+      {
+        "month": "jul",
+        "month_dates_bitmask": 2012209087,
+        "month_desc": "July",
+        "month_short_desc": "Jul",
+        "month_weekdays_bitmask": 63,
+        "year": 2018
+      },
+      {
+        "month": "aug",
+        "month_dates_bitmask": 2130574327,
+        "month_desc": "August",
+        "month_short_desc": "Aug",
+        "month_weekdays_bitmask": 63,
+        "year": 2018
+      },
+      {
+        "month": "sep",
+        "month_dates_bitmask": 64995198,
+        "month_desc": "September",
+        "month_short_desc": "Sep",
+        "month_weekdays_bitmask": 63,
+        "year": 2018
+      }
+    ]
+  }
+}
