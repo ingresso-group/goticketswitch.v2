@@ -1086,6 +1086,47 @@ func TestGetSourcesError(t *testing.T) {
 	assert.Equal(t, err.Error(), "ticketswitch: API error 8: Bad data supplied")
 }
 
+func TestGetSendMethods(t *testing.T) {
+	sourcesJSON, error := ioutil.ReadFile("test_data/send_methods.json")
+	if error != nil {
+		t.Fatalf("Cannot find test_data/send_methods.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/send_methods.v1", r.URL.Path)
+			assert.Equal(t, http.MethodGet, r.Method)
+			assert.Equal(t, "6IF-C30", r.URL.Query().Get("perf_id"))
+			r.ParseForm()
+			w.Write(sourcesJSON)
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	results, err := client.GetSendMethods("6IF-C30", nil)
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, results.SourceCode, "ext_test0")
+		sendMethods := results.SendMethodsHolder.SendMethods
+		assert.Len(t, sendMethods, 2)
+		assert.Equal(t, sendMethods[0].Type, "collect")
+		assert.Equal(t, sendMethods[0].Code, "COBO")
+		assert.Equal(t, sendMethods[0].Cost, decimal.NewFromFloat(1.5))
+		assert.Equal(t, sendMethods[1].Type, "post")
+		assert.Equal(t, sendMethods[1].Code, "POST")
+		assert.Equal(t, sendMethods[1].Cost, decimal.NewFromFloat(3.5))
+		assert.Len(t, sendMethods[1].PermittedCountries.Countries, 2)
+		assert.Equal(t, sendMethods[1].PermittedCountries.Countries[0].Code, "ie")
+		assert.Equal(t, sendMethods[1].PermittedCountries.Countries[0].Desc, "Ireland")
+		assert.Equal(t, sendMethods[1].PermittedCountries.Countries[1].Code, "uk")
+		assert.Equal(t, sendMethods[1].PermittedCountries.Countries[1].Desc, "United Kingdom")
+	}
+}
+
 func TestMakeReservation(t *testing.T) {
 	reservationJSON, error := ioutil.ReadFile("test_data/reservation.json")
 	if error != nil {
@@ -1406,7 +1447,7 @@ func TestGetStatus(t *testing.T) {
 				PostSymbol: "",
 				Number:     826,
 			},
-		}, result.Currency)
+		}, result.CurrencyDetails)
 		expectedReserve := time.Date(2018, 5, 27, 13, 3, 14, 0, time.UTC)
 		assert.Equal(t, expectedReserve, result.ReserveDatetime)
 		expectedPurchase := time.Date(2018, 5, 27, 13, 3, 15, 0, time.UTC)

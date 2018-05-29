@@ -62,7 +62,7 @@ func (params *MakeReservationParams) Params() map[string]string {
 	}
 
 	if params.SendMethod != "" && params.SourceCode != "" {
-		values[fmt.Sprintf("%s_send_method", params.SourceCode)] = params.SendMethod
+		values[fmt.Sprintf("%s_send_code", params.SourceCode)] = params.SendMethod
 	}
 
 	if params.TrolleyToken != "" {

@@ -15,7 +15,7 @@ func main() {
 		NumberOfSeats: 2,
 	}
 	//params.CostRange = true
-	results, err := client.GetAvailability("7AA-5", &params)
+	results, err := client.GetAvailability("7AB-5", &params)
 	fmt.Println("\n\nAVAILABILITY:")
 	if err != nil {
 		log.Fatal(err)
@@ -29,12 +29,21 @@ func main() {
 	}
 	log.Printf("%+v", sources)
 
+	sendMethods, err := client.GetSendMethods("7AB-5", nil)
+	fmt.Println("\n\nSEND METHODS:")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%+v", sendMethods)
+
 	reserveParams := &ticketswitch.MakeReservationParams{
 		PerformanceID:  "7AB-5",
 		PriceBandCode:  "B/pool",
 		TicketTypeCode: "CIRCLE",
 		NumberOfSeats:  2,
 		Seats:          []string{"A1", "A2"},
+		SourceCode:     sendMethods.SourceCode,
+		SendMethod:     sendMethods.SendMethodsHolder.SendMethods[1].Code,
 	}
 	reservation, err := client.MakeReservation(reserveParams)
 	fmt.Println("\n\nRESERVATION:")
