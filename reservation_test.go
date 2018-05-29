@@ -39,7 +39,7 @@ func TestMakeReservationParams_Params(t *testing.T) {
 	assert.Equal(t, values["seat0"], "A1")
 	assert.Equal(t, values["seat1"], "A2")
 	assert.Equal(t, values["seat2"], "A3")
-	assert.Equal(t, values["ext_test0_send_method"], "POST")
+	assert.Equal(t, values["ext_test0_send_code"], "POST")
 	assert.Equal(t, values["trolley_token"], "alkdfja8sldifa9oiefjaeiojfa2eijfasekfjasldkfjasdasdlkfhaskduhfaksjudf")
 	assert.Equal(t, values["req_predicted_commission"], "1")
 }
