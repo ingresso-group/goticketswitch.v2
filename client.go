@@ -657,7 +657,10 @@ func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseRes
 
 // GetStatus retrieves the transaction from the API
 func (client *Client) GetStatus(params *TransactionParams) (*StatusResult, error) {
-	req := NewRequest(http.MethodPost, "status.v1", params.Params())
+	req := NewRequest(http.MethodGet, "status.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {

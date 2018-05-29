@@ -1379,13 +1379,8 @@ func TestGetStatus(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/status.v1", r.URL.Path)
-			assert.Equal(t, http.MethodPost, r.Method)
-			var inputs map[string]interface{}
-			decoder := json.NewDecoder(r.Body)
-			if err := decoder.Decode(&inputs); err != nil {
-				t.Fatal(err)
-			}
-			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
+			assert.Equal(t, http.MethodGet, r.Method)
+			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", r.URL.Query().Get("transaction_uuid"))
 			w.Write([]byte(data))
 		}))
 	defer server.Close()
