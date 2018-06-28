@@ -18,7 +18,7 @@ type TicketOrder struct {
 	NumberOfSeats      int             `json:"no_of_seats"`
 	SaleSeatprice      decimal.Decimal `json:"sale_seatprice"`
 	SaleSurcharge      decimal.Decimal `json:"sale_surcharge"`
-	Seats              []Seat          `json:seats`
+	Seats              []Seat          `json:"seats"`
 	TotalSaleSeatprice decimal.Decimal `json:"total_sale_seatprice"`
 	TotalSaleSurcharge decimal.Decimal `json:"total_sale_surcharge"`
 }
