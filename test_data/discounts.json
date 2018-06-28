@@ -1,0 +1,73 @@
+{
+   "discounts" : {
+      "discount" : [
+         {
+            "price_band_code" : "A/pool",
+            "sale_seatprice" : 35,
+            "percentage_saving" : 0,
+            "allows_leaving_single_seats" : "always",
+            "non_offer_sale_surcharge" : 4,
+            "number_available" : 6,
+            "is_offer" : false,
+            "absolute_saving" : 0,
+            "discount_desc" : "Adult",
+            "discount_code" : "ADULT",
+            "sale_surcharge" : 4,
+            "non_offer_sale_seatprice" : 35
+         },
+         {
+            "number_available" : 6,
+            "is_offer" : false,
+            "price_band_code" : "A/pool",
+            "sale_seatprice" : 18,
+            "percentage_saving" : 0,
+            "allows_leaving_single_seats" : "always",
+            "non_offer_sale_surcharge" : 3,
+            "sale_surcharge" : 3,
+            "non_offer_sale_seatprice" : 18,
+            "absolute_saving" : 0,
+            "discount_code" : "CHILD",
+            "discount_desc" : "Child rate"
+         },
+         {
+            "non_offer_sale_seatprice" : 26,
+            "sale_surcharge" : 3,
+            "discount_desc" : "Student rate",
+            "discount_code" : "STUDENT",
+            "absolute_saving" : 0,
+            "is_offer" : false,
+            "number_available" : 6,
+            "allows_leaving_single_seats" : "always",
+            "non_offer_sale_surcharge" : 3,
+            "percentage_saving" : 0,
+            "sale_seatprice" : 26,
+            "price_band_code" : "A/pool"
+         },
+         {
+            "allows_leaving_single_seats" : "always",
+            "non_offer_sale_surcharge" : 3,
+            "price_band_code" : "A/pool",
+            "percentage_saving" : 0,
+            "sale_seatprice" : 28,
+            "number_available" : 6,
+            "is_offer" : false,
+            "discount_code" : "OAP",
+            "discount_desc" : "Senior citizen rate",
+            "absolute_saving" : 0,
+            "non_offer_sale_seatprice" : 28,
+            "sale_surcharge" : 3
+         }
+      ]
+   },
+   "currency_code" : "gbp",
+   "currency_details" : {
+      "gbp" : {
+         "currency_pre_symbol" : "£",
+         "currency_factor" : 100,
+         "currency_code" : "gbp",
+         "currency_post_symbol" : "",
+         "currency_places" : 2,
+         "currency_number" : 826
+      }
+   }
+}

@@ -15,12 +15,19 @@ func main() {
 		NumberOfSeats: 2,
 	}
 	//params.CostRange = true
-	results, err := client.GetAvailability("7AB-5", &params)
+	results, err := client.GetAvailability("7AB-6", &params)
 	fmt.Println("\n\nAVAILABILITY:")
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("%+v", results)
+
+	discountsResults, err := client.GetDiscounts("6IF-C5O", "CIRCLE", "A/pool", nil)
+	fmt.Println("\n\ndiscountsResults:")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%+v", discountsResults)
 
 	sources, err := client.GetSources(nil)
 	fmt.Println("\n\nSOURCES:")
