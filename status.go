@@ -2,7 +2,7 @@ package ticketswitch
 
 import "time"
 
-// Status describes the current state of a transaction.
+// StatusResult describes the current state of a transaction.
 type StatusResult struct {
 	Languages        []string            `json:"language_list"`
 	Trolley          Trolley             `json:"trolley_contents"`

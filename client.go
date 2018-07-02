@@ -506,6 +506,31 @@ func (client *Client) GetAvailability(perf string, params *GetAvailabilityParams
 	return &results, nil
 }
 
+// GetDiscounts fetches the Discounts for a particular performance, ticket type and price band from the API
+func (client *Client) GetDiscounts(perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
+	req := NewRequest(http.MethodGet, "discounts.v1", nil)
+	if params != nil {
+		req.SetValues(params.Universal())
+	}
+	req.Values.Set("perf_id", perf)
+	req.Values.Set("ticket_type_code", ticketTypeCode)
+	req.Values.Set("price_band_code", priceBandCode)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var results DiscountsResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&results)
+	if err != nil {
+		return nil, err
+	}
+
+	return &results, nil
+}
+
 // GetSources fetches the available sources (a.k.a. backend systems) from the
 // API
 func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error) {
