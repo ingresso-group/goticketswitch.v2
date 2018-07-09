@@ -542,8 +542,8 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 }
 
 // GetDiscounts fetches the Discounts for a particular performance, ticket type and price band from the API
-func (client *Client) GetDiscounts(perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
-	req := NewRequest(http.MethodGet, "discounts.v1", nil)
+func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
+	req := NewRequest(http.MethodGet, "discounts.v1", nil, ctx)
 	if params != nil {
 		req.SetValues(params.Universal())
 	}
