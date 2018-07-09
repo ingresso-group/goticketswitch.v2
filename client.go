@@ -2,6 +2,7 @@ package ticketswitch
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -132,6 +133,9 @@ func (client *Client) Do(req *Request) (resp *http.Response, err error) {
 		return
 	}
 	r.Header = req.Header
+	if req.Context != nil {
+		r = r.WithContext(req.Context)
+	}
 
 	resp, err = client.HTTPClient.Do(r)
 	if err != nil {
@@ -178,6 +182,7 @@ type UniversalParams struct {
 	SourceInfo                   bool
 	TrackingID                   string
 	Misc                         map[string]string
+	Context                      context.Context
 }
 
 // Universal returns the parameters as a map of parameters
@@ -330,6 +335,7 @@ func (client *Client) ListEvents(params *ListEventsParams) (*ListEventsResults, 
 	req := NewRequest(http.MethodGet, "events.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
+		req.Context = params.UniversalParams.Context
 	}
 
 	resp, err := client.Do(req)
@@ -384,6 +390,7 @@ func (client *Client) GetEvents(eventIDs []string, params *UniversalParams) (map
 	req := NewRequest(http.MethodGet, "events_by_id.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
+		req.Context = params.Context
 	}
 
 	req.SetValues(map[string]string{"event_id_list": strings.Join(eventIDs, ",")})
@@ -466,6 +473,7 @@ func (client *Client) ListPerformances(params *ListPerformancesParams) (*ListPer
 	req := NewRequest(http.MethodGet, "performances.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
+		req.Context = params.UniversalParams.Context
 	}
 
 	resp, err := client.Do(req)
@@ -488,6 +496,7 @@ func (client *Client) GetAvailability(perf string, params *GetAvailabilityParams
 	req := NewRequest(http.MethodGet, "availability.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
+		req.Context = params.UniversalParams.Context
 	}
 	req.Values.Set("perf_id", perf)
 
@@ -511,6 +520,7 @@ func (client *Client) GetDiscounts(perf string, ticketTypeCode string, priceBand
 	req := NewRequest(http.MethodGet, "discounts.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
+		req.Context = params.Context
 	}
 	req.Values.Set("perf_id", perf)
 	req.Values.Set("ticket_type_code", ticketTypeCode)
@@ -537,6 +547,7 @@ func (client *Client) GetSources(params *UniversalParams) (*SourcesResult, error
 	req := NewRequest(http.MethodGet, "sources.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
+		req.Context = params.Context
 	}
 
 	resp, err := client.Do(req)
@@ -562,6 +573,7 @@ func (client *Client) GetSendMethods(perf string, params *UniversalParams) (*Sen
 	req := NewRequest(http.MethodGet, "send_methods.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
+		req.Context = params.Context
 	}
 	req.Values.Set("perf_id", perf)
 
@@ -583,6 +595,7 @@ func (client *Client) GetSendMethods(perf string, params *UniversalParams) (*Sen
 // MakeReservation places a hold on products in the inventory via the API
 func (client *Client) MakeReservation(params *MakeReservationParams) (*ReservationResult, error) {
 	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())
+	req.Context = params.UniversalParams.Context
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -623,6 +636,7 @@ func (params *TransactionParams) Params() map[string]string {
 // made on backend systems for a transaction.
 func (client *Client) ReleaseReservation(params *TransactionParams) (success bool, err error) {
 	req := NewRequest(http.MethodPost, "release.v1", params.Params())
+	req.Context = params.UniversalParams.Context
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -688,6 +702,7 @@ func (params *MakePurchaseParams) Params() map[string]string {
 // API
 func (client *Client) MakePurchase(params *MakePurchaseParams) (*MakePurchaseResult, error) {
 	req := NewRequest(http.MethodPost, "purchase.v1", params.Params())
+	req.Context = params.UniversalParams.Context
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -709,6 +724,7 @@ func (client *Client) GetStatus(params *TransactionParams) (*StatusResult, error
 	req := NewRequest(http.MethodGet, "status.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
+		req.Context = params.UniversalParams.Context
 	}
 
 	resp, err := client.Do(req)

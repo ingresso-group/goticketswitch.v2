@@ -1,6 +1,7 @@
 package ticketswitch
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 )
@@ -14,6 +15,7 @@ type Request struct {
 	Body     interface{}
 	Puzzled  bool
 	LogRaw   bool
+	Context  context.Context
 }
 
 // NewRequest returns a pointer to a new created Request
