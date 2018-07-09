@@ -19,7 +19,7 @@ func TestGetURL(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 	u, err := client.getURL(req)
 	if assert.Nil(t, err) {
 		assert.Equal(t, u.String(), "https://super.awesome.tickets/f13/events.v1")
@@ -32,7 +32,7 @@ func TestGetURL_bad(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 	_, err := client.getURL(req)
 	assert.NotNil(t, err)
 }
@@ -43,7 +43,7 @@ func TestGetURL_with_values(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 	req.Values.Add("foo", "bar")
 	req.Values.Add("lol", "beans")
 	req.Values.Add("lol", "icoptor")
@@ -61,7 +61,7 @@ func TestGetURL_with_crypto_block(t *testing.T) {
 		User:        "fred_flintstone",
 	}
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -83,7 +83,7 @@ func TestGetURL_with_sub_user(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -100,7 +100,7 @@ func TestSetHeaders(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	err := client.setHeaders(req)
 
@@ -155,7 +155,7 @@ func TestDo_post(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"}, context.TODO())
+	req := NewRequest(context.TODO(), "POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
 
 	resp, err := client.Do(req)
 
@@ -187,7 +187,7 @@ func TestDo_get(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	resp, err := client.Do(req)
 
@@ -204,7 +204,7 @@ func TestDo_with_bad_base_url(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -225,7 +225,7 @@ func TestDo_with_header_issues(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "GET", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -247,7 +247,7 @@ func TestDo_post_with_unmarshalable_body(t *testing.T) {
 
 	client := NewClient(config)
 	// func cannot be marshalled
-	req := NewRequest("POST", "events.v1", func() { t.Fatal("this should not run") }, context.TODO())
+	req := NewRequest(context.TODO(), "POST", "events.v1", func() { t.Fatal("this should not run") })
 
 	_, err := client.Do(req)
 
@@ -269,7 +269,7 @@ func TestDo_unrequestable_request(t *testing.T) {
 
 	client := NewClient(config)
 	// unicode in the method is a nono
-	req := NewRequest("£££££", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "£££££", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -286,7 +286,7 @@ func TestDo_error_when_doing(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("POST", "events.v1", nil, context.TODO())
+	req := NewRequest(context.TODO(), "POST", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -991,7 +991,7 @@ func TestGetDiscounts(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetDiscounts("6IF-C5O", "CIRCLE", "A/pool", nil)
+	results, err := client.GetDiscounts(context.TODO(), "6IF-C5O", "CIRCLE", "A/pool", nil)
 
 	if assert.Nil(t, err) {
 		discounts := results.DiscountsHolder.Discounts

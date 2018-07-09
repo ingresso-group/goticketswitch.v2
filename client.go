@@ -165,7 +165,7 @@ func (client *Client) Test(ctx context.Context) (*User, error) {
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).Test")
 	defer span.End()
 
-	req := NewRequest("GET", "test.v1", nil, ctx)
+	req := NewRequest(ctx, "GET", "test.v1", nil)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -350,7 +350,7 @@ func (client *Client) ListEvents(ctx context.Context, params *ListEventsParams) 
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ListEvents")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "events.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "events.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}
@@ -407,7 +407,7 @@ func (client *Client) GetEvents(ctx context.Context, eventIDs []string, params *
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetEvents")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "events_by_id.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "events_by_id.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
 	}
@@ -495,7 +495,7 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ListPerformances")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "performances.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "performances.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}
@@ -520,7 +520,7 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetAvailability")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "availability.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "availability.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}
@@ -543,7 +543,7 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 
 // GetDiscounts fetches the Discounts for a particular performance, ticket type and price band from the API
 func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
-	req := NewRequest(http.MethodGet, "discounts.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "discounts.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
 	}
@@ -572,7 +572,7 @@ func (client *Client) GetSources(ctx context.Context, params *UniversalParams) (
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetSources")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "sources.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "sources.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
 	}
@@ -600,7 +600,7 @@ func (client *Client) GetSendMethods(ctx context.Context, perf string, params *U
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetSendMethods")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "send_methods.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "send_methods.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
 	}
@@ -626,7 +626,7 @@ func (client *Client) MakeReservation(ctx context.Context, params *MakeReservati
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).MakeReservation")
 	defer span.End()
 
-	req := NewRequest(http.MethodPost, "reserve.v1", params.Params(), ctx)
+	req := NewRequest(ctx, http.MethodPost, "reserve.v1", params.Params())
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -669,7 +669,7 @@ func (client *Client) ReleaseReservation(ctx context.Context, params *Transactio
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ReleaseReservation")
 	defer span.End()
 
-	req := NewRequest(http.MethodPost, "release.v1", params.Params(), ctx)
+	req := NewRequest(ctx, http.MethodPost, "release.v1", params.Params())
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -737,7 +737,7 @@ func (client *Client) MakePurchase(ctx context.Context, params *MakePurchasePara
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).MakePurchase")
 	defer span.End()
 
-	req := NewRequest(http.MethodPost, "purchase.v1", params.Params(), ctx)
+	req := NewRequest(ctx, http.MethodPost, "purchase.v1", params.Params())
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -759,7 +759,7 @@ func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) 
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetStatus")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "status.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "status.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}
@@ -784,7 +784,7 @@ func (client *Client) GetMonths(ctx context.Context, params *GetMonthsParams) (*
 	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetMonths")
 	defer span.End()
 
-	req := NewRequest(http.MethodGet, "months.v1", nil, ctx)
+	req := NewRequest(ctx, http.MethodGet, "months.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}

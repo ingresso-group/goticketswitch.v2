@@ -19,7 +19,7 @@ type Request struct {
 }
 
 // NewRequest returns a pointer to a new created Request
-func NewRequest(method, endpoint string, body interface{}, ctx context.Context) *Request {
+func NewRequest(ctx context.Context, method, endpoint string, body interface{}) *Request {
 	r := Request{
 		Method:   method,
 		Endpoint: endpoint,
