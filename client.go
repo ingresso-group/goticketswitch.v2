@@ -42,6 +42,24 @@ const (
 	DefaultUserAgent = "goticketswitch"
 )
 
+type TicketswitchClient interface {
+	Do(req *Request) (resp *http.Response, err error)
+	Test(ctx context.Context) (*User, error)
+	ListEvents(ctx context.Context, params *ListEventsParams) (*ListEventsResults, error)
+	GetEvents(ctx context.Context, eventIDs []string, params *UniversalParams) (map[string]*Event, error)
+	GetEvent(ctx context.Context, eventID string, params *UniversalParams) (*Event, error)
+	ListPerformances(ctx context.Context, params *ListPerformancesParams) (*ListPerformancesResults, error)
+	GetAvailability(ctx context.Context, perf string, params *GetAvailabilityParams) (*AvailabilityResult, error)
+	GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error)
+	GetSources(ctx context.Context, params *UniversalParams) (*SourcesResult, error)
+	GetSendMethods(ctx context.Context, perf string, params *UniversalParams) (*SendMethodsResults, error)
+	MakeReservation(ctx context.Context, params *MakeReservationParams) (*ReservationResult, error)
+	ReleaseReservation(ctx context.Context, params *TransactionParams) (success bool, err error)
+	MakePurchase(ctx context.Context, params *MakePurchaseParams) (*MakePurchaseResult, error)
+	GetStatus(ctx context.Context, params *TransactionParams) (*StatusResult, error)
+	GetMonths(ctx context.Context, params *GetMonthsParams) (*MonthsResult, error)
+}
+
 // Client wraps the ticketswitch f13 API.
 type Client struct {
 	Config     *Config
