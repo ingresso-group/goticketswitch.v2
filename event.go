@@ -106,6 +106,12 @@ type Event struct {
 	ValidQuantities []int `json:"valid_quantities"`
 	// indicates that the event is an addon product to another event.
 	IsAddon bool `json:"is_add_on"`
+	// AreaCode is for internal use only
+	AreaCode string `json:"area_code"`
+	// Code is for internal use only
+	Code string `json:"event_code"`
+	// VenueCode is for internal use only
+	VenueCode string `json:"venue_code"`
 }
 
 // ListEventsResults represents a set of events returned by the API

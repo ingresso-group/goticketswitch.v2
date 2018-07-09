@@ -972,6 +972,50 @@ func TestGetAvailability(t *testing.T) {
 	}
 }
 
+func TestGetDiscounts(t *testing.T) {
+	discountsJSON, error := ioutil.ReadFile("test_data/discounts.json")
+	if error != nil {
+		t.Fatalf("Cannot find test_data/discounts.json")
+	}
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/discounts.v1", r.URL.Path)
+			r.ParseForm()
+			w.Write(discountsJSON)
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	results, err := client.GetDiscounts("6IF-C5O", "CIRCLE", "A/pool", nil)
+
+	if assert.Nil(t, err) {
+		discounts := results.DiscountsHolder.Discounts
+		assert.Len(t, discounts, 4)
+		assert.Equal(t, discounts[0].Code, "ADULT")
+		assert.Equal(t, discounts[0].Description, "Adult")
+		assert.Equal(t, discounts[0].Seatprice, decimal.NewFromFloat(35))
+		assert.Equal(t, discounts[0].Surcharge, decimal.NewFromFloat(4))
+		assert.Equal(t, discounts[0].NonOfferSeatprice, decimal.NewFromFloat(35))
+		assert.Equal(t, discounts[0].NonOfferSurcharge, decimal.NewFromFloat(4))
+		assert.Equal(t, discounts[1].Code, "CHILD")
+		assert.Equal(t, discounts[1].Description, "Child rate")
+		assert.Equal(t, discounts[2].Code, "STUDENT")
+		assert.Equal(t, discounts[2].Description, "Student rate")
+		assert.Equal(t, discounts[3].Code, "OAP")
+		assert.Equal(t, discounts[3].Description, "Senior citizen rate")
+		for _, discount := range discounts {
+			assert.Equal(t, discount.AllowsLeavingSingleSeats, "always")
+			assert.Equal(t, discount.NumberAvailable, 6)
+			assert.Equal(t, discount.IsOffer, false)
+		}
+	}
+}
+
 func TestGetSources(t *testing.T) {
 	sourcesJSON, error := ioutil.ReadFile("test_data/sources.json")
 	if error != nil {
