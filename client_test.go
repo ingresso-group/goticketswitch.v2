@@ -1,6 +1,7 @@
 package ticketswitch
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -18,7 +19,7 @@ func TestGetURL(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 	u, err := client.getURL(req)
 	if assert.Nil(t, err) {
 		assert.Equal(t, u.String(), "https://super.awesome.tickets/f13/events.v1")
@@ -31,7 +32,7 @@ func TestGetURL_bad(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 	_, err := client.getURL(req)
 	assert.NotNil(t, err)
 }
@@ -42,7 +43,7 @@ func TestGetURL_with_values(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 	req.Values.Add("foo", "bar")
 	req.Values.Add("lol", "beans")
 	req.Values.Add("lol", "icoptor")
@@ -60,7 +61,7 @@ func TestGetURL_with_crypto_block(t *testing.T) {
 		User:        "fred_flintstone",
 	}
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -82,7 +83,7 @@ func TestGetURL_with_sub_user(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -99,7 +100,7 @@ func TestSetHeaders(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	err := client.setHeaders(req)
 
@@ -154,7 +155,7 @@ func TestDo_post(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
+	req := NewRequest(context.Background(), "POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
 
 	resp, err := client.Do(req)
 
@@ -186,7 +187,7 @@ func TestDo_get(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	resp, err := client.Do(req)
 
@@ -203,7 +204,7 @@ func TestDo_with_bad_base_url(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -224,7 +225,7 @@ func TestDo_with_header_issues(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("GET", "events.v1", nil)
+	req := NewRequest(context.Background(), "GET", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -246,7 +247,7 @@ func TestDo_post_with_unmarshalable_body(t *testing.T) {
 
 	client := NewClient(config)
 	// func cannot be marshalled
-	req := NewRequest("POST", "events.v1", func() { t.Fatal("this should not run") })
+	req := NewRequest(context.Background(), "POST", "events.v1", func() { t.Fatal("this should not run") })
 
 	_, err := client.Do(req)
 
@@ -268,7 +269,7 @@ func TestDo_unrequestable_request(t *testing.T) {
 
 	client := NewClient(config)
 	// unicode in the method is a nono
-	req := NewRequest("£££££", "events.v1", nil)
+	req := NewRequest(context.Background(), "£££££", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -285,7 +286,7 @@ func TestDo_error_when_doing(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest("POST", "events.v1", nil)
+	req := NewRequest(context.Background(), "POST", "events.v1", nil)
 
 	_, err := client.Do(req)
 
@@ -309,7 +310,7 @@ func TestTest(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	user, err := client.Test()
+	user, err := client.Test(context.Background())
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, "bill", user.ID)
@@ -335,7 +336,7 @@ func TestTest_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	user, err := client.Test()
+	user, err := client.Test(context.Background())
 
 	if assert.NotNil(t, err) {
 		assert.Nil(t, user)
@@ -352,7 +353,7 @@ func TestTest_request_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	_, err := client.Test()
+	_, err := client.Test(context.Background())
 
 	assert.NotNil(t, err)
 }
@@ -374,7 +375,7 @@ func TestTest_request_read_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	_, err := client.Test()
+	_, err := client.Test(context.Background())
 
 	assert.NotNil(t, err)
 }
@@ -395,7 +396,7 @@ func TestTest_request_bad_user_json(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	_, err := client.Test()
+	_, err := client.Test(context.Background())
 
 	assert.NotNil(t, err)
 }
@@ -642,7 +643,7 @@ func TestListEvents(t *testing.T) {
 	params := &ListEventsParams{
 		Keywords: []string{"foo", "bar", "lol"},
 	}
-	results, err := client.ListEvents(params)
+	results, err := client.ListEvents(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, 2, results.PagingStatus.PageLength)
@@ -664,7 +665,7 @@ func TestListEvents_request_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	_, err := client.ListEvents(nil)
+	_, err := client.ListEvents(context.Background(), nil)
 
 	assert.NotNil(t, err)
 }
@@ -685,7 +686,7 @@ func TestListEvents_read_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	_, err := client.ListEvents(nil)
+	_, err := client.ListEvents(context.Background(), nil)
 
 	assert.NotNil(t, err)
 }
@@ -727,7 +728,7 @@ func TestGetEvents(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	events, err := client.GetEvents([]string{"1AA", "2BB", "3CC"}, nil)
+	events, err := client.GetEvents(context.Background(), []string{"1AA", "2BB", "3CC"}, nil)
 
 	if err != nil {
 		t.Fatal(err)
@@ -771,7 +772,7 @@ func TestGetEvent(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	event, err := client.GetEvent("1AA", nil)
+	event, err := client.GetEvent(context.Background(), "1AA", nil)
 
 	if err != nil {
 		t.Fatal(err)
@@ -851,7 +852,7 @@ func TestListPerformances(t *testing.T) {
 		StartDate: time.Date(2015, 4, 3, 2, 1, 0, 0, time.UTC),
 		EndDate:   time.Date(2015, 6, 7, 8, 9, 0, 0, time.UTC),
 	}
-	results, err := client.ListPerformances(params)
+	results, err := client.ListPerformances(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		assert.True(t, results.HasPerfNames)
@@ -900,7 +901,7 @@ func TestListPerformancesSingleResult(t *testing.T) {
 		StartDate: time.Date(2015, 4, 3, 2, 1, 0, 0, time.UTC),
 		EndDate:   time.Date(2015, 6, 7, 8, 9, 0, 0, time.UTC),
 	}
-	results, err := client.ListPerformances(params)
+	results, err := client.ListPerformances(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		assert.False(t, results.HasPerfNames)
@@ -928,7 +929,7 @@ func TestListPerformances_error(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	user, err := client.ListPerformances(nil)
+	user, err := client.ListPerformances(context.Background(), nil)
 
 	if assert.NotNil(t, err) {
 		assert.Nil(t, user)
@@ -958,7 +959,7 @@ func TestGetAvailability(t *testing.T) {
 	params := GetAvailabilityParams{
 		NumberOfSeats: 2,
 	}
-	results, err := client.GetAvailability("7AA-5", &params)
+	results, err := client.GetAvailability(context.Background(), "7AA-5", &params)
 
 	if assert.Nil(t, err) {
 		assert.NotNil(t, results)
@@ -990,7 +991,7 @@ func TestGetDiscounts(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetDiscounts("6IF-C5O", "CIRCLE", "A/pool", nil)
+	results, err := client.GetDiscounts(context.Background(), "6IF-C5O", "CIRCLE", "A/pool", nil)
 
 	if assert.Nil(t, err) {
 		discounts := results.DiscountsHolder.Discounts
@@ -1034,7 +1035,7 @@ func TestGetSources(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetSources(nil)
+	results, err := client.GetSources(context.Background(), nil)
 
 	if assert.Nil(t, err) {
 		sources := results.Sources
@@ -1071,7 +1072,7 @@ func TestGetSourcesWithReqSrcInfo(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetSources(params)
+	results, err := client.GetSources(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		sources := results.Sources
@@ -1124,7 +1125,7 @@ func TestGetSourcesError(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetSources(params)
+	results, err := client.GetSources(context.Background(), params)
 
 	assert.Nil(t, results)
 	assert.Equal(t, err.Error(), "ticketswitch: API error 8: Bad data supplied")
@@ -1151,7 +1152,7 @@ func TestGetSendMethods(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.GetSendMethods("6IF-C30", nil)
+	results, err := client.GetSendMethods(context.Background(), "6IF-C30", nil)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, results.SourceCode, "ext_test0")
@@ -1199,7 +1200,7 @@ func TestMakeReservation(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.MakeReservation(params)
+	results, err := client.MakeReservation(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, results.AllowedCountries["ad"], "Andorra")
@@ -1253,7 +1254,7 @@ func TestMakeReservationFailure(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	results, err := client.MakeReservation(params)
+	results, err := client.MakeReservation(context.Background(), params)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, results.AllowedCountries["ad"], "Andorra")
@@ -1315,7 +1316,7 @@ func TestReleaseReservation_success(t *testing.T) {
 	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
-	success, err := client.ReleaseReservation(params)
+	success, err := client.ReleaseReservation(context.Background(), params)
 	if assert.Nil(t, err) {
 		assert.True(t, success)
 	}
@@ -1337,7 +1338,7 @@ func TestReleaseReservation_failed(t *testing.T) {
 	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
-	success, err := client.ReleaseReservation(params)
+	success, err := client.ReleaseReservation(context.Background(), params)
 	if assert.Nil(t, err) {
 		assert.False(t, success)
 	}
@@ -1411,7 +1412,7 @@ func TestMakePurchase_success(t *testing.T) {
 	params := &MakePurchaseParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
-	result, err := client.MakePurchase(params)
+	result, err := client.MakePurchase(context.Background(), params)
 	if assert.Nil(t, err) {
 		assert.Equal(t, "purchased", result.Status)
 		assert.Nil(t, result.Callout)
@@ -1479,7 +1480,7 @@ func TestGetStatus(t *testing.T) {
 	params := &TransactionParams{
 		TransactionUUID: "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
 	}
-	result, err := client.GetStatus(params)
+	result, err := client.GetStatus(context.Background(), params)
 	if assert.Nil(t, err) {
 		assert.Equal(t, "purchased", result.Status)
 		assert.Equal(t, map[string]Currency{
