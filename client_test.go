@@ -1272,7 +1272,7 @@ func TestMakeReservationFailure(t *testing.T) {
 		assert.Equal(t, results.Status, "reserved")
 		assert.Equal(t, results.Trolley.TransactionUUID, "U-8841ADC8-5F69-11E8-A0DD-AC1F6B466128-EC1A0BEE-LDNX")
 		assert.Equal(t, len(results.Trolley.Bundles), results.Trolley.BundleCount)
-		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(20))
+		assert.Equal(t, results.Trolley.Bundles[0].TotalCost, decimal.NewFromFloat(20.0))
 		assert.Equal(t, len(results.Trolley.Bundles[0].Orders), 0)
 		assert.Equal(t, len(results.UnreservedOrders), 1)
 		assert.Equal(t, results.UnreservedOrders[0].ItemNumber, 1)
