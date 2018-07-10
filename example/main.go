@@ -11,7 +11,6 @@ import (
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 
-	"github.com/ingresso-group/expedia-api-adapter/utils"
 	ticketswitch "github.com/ingresso-group/goticketswitch.v2"
 )
 
@@ -112,7 +111,7 @@ func setupTracing() {
 	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
 	// Tracing exporter via Jaeger
-	jaegerHost := utils.GetEnv("JAEGER_ADDR", "http://localhost:14268")
+	jaegerHost := "http://localhost:14268"
 	jeagerExporter, err := jaeger.NewExporter(jaeger.Options{
 		Endpoint:    jaegerHost,
 		ServiceName: "ticketswitcher",
