@@ -22,13 +22,18 @@ func main() {
 
 	// Add opencensus tracing to the http client Transport (aka RoundTripper interface)
 	client.HTTPClient.Transport = &ochttp.Transport{}
-	ctx, span := trace.StartSpan(context.Background(), "Main")
+	parentCtx, span := trace.StartSpan(context.Background(), "Main")
 	defer span.End()
 	params := ticketswitch.GetAvailabilityParams{
 		NumberOfSeats: 2,
 	}
 
-	ctx, innerSpan := trace.StartSpan(ctx, "GetAvailability")
+	var innerSpan *trace.Span
+	// Add a timeout to the context
+	ctx, cancel := context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
+	// Trace each individual API calls using inner spans
+	ctx, innerSpan = trace.StartSpan(ctx, "GetAvailability")
 	results, err := client.GetAvailability(ctx, "7AB-6", &params)
 	innerSpan.End()
 	fmt.Println("\n\nAVAILABILITY:")
@@ -37,6 +42,8 @@ func main() {
 	}
 	log.Printf("%+v", results)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
 	ctx, innerSpan = trace.StartSpan(ctx, "GetDiscounts")
 	discountsResults, err := client.GetDiscounts(ctx, "6IF-C5O", "CIRCLE", "A/pool", nil)
 	innerSpan.End()
@@ -46,8 +53,10 @@ func main() {
 	}
 	log.Printf("%+v", discountsResults)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 3*time.Second)
+	defer cancel()
 	ctx, innerSpan = trace.StartSpan(ctx, "GetSources")
-	sources, err := client.GetSources(nil, nil)
+	sources, err := client.GetSources(ctx, nil)
 	innerSpan.End()
 	fmt.Println("\n\nSOURCES:")
 	if err != nil {
@@ -55,8 +64,10 @@ func main() {
 	}
 	log.Printf("%+v", sources)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
 	ctx, innerSpan = trace.StartSpan(ctx, "GetSendMethods")
-	sendMethods, err := client.GetSendMethods(nil, "7AB-5", nil)
+	sendMethods, err := client.GetSendMethods(ctx, "7AB-5", nil)
 	innerSpan.End()
 	fmt.Println("\n\nSEND METHODS:")
 	if err != nil {
@@ -64,6 +75,8 @@ func main() {
 	}
 	log.Printf("%+v", sendMethods)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
 	reserveParams := &ticketswitch.MakeReservationParams{
 		PerformanceID:  "7AB-5",
 		PriceBandCode:  "B/pool",
@@ -74,7 +87,7 @@ func main() {
 		SendMethod:     sendMethods.SendMethodsHolder.SendMethods[1].Code,
 	}
 	ctx, innerSpan = trace.StartSpan(ctx, "MakeReservation")
-	reservation, err := client.MakeReservation(nil, reserveParams)
+	reservation, err := client.MakeReservation(ctx, reserveParams)
 	innerSpan.End()
 	fmt.Println("\n\nRESERVATION:")
 	if err != nil {
@@ -82,9 +95,11 @@ func main() {
 	}
 	log.Printf("%+v", reservation)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
 	transactionParams := ticketswitch.TransactionParams{TransactionUUID: reservation.Trolley.TransactionUUID}
 	ctx, innerSpan = trace.StartSpan(ctx, "GetStatus")
-	status, err := client.GetStatus(nil, &transactionParams)
+	status, err := client.GetStatus(ctx, &transactionParams)
 	innerSpan.End()
 	fmt.Println("\n\nSTATUS:")
 	if err != nil {
@@ -92,8 +107,10 @@ func main() {
 	}
 	log.Printf("%+v", status)
 
+	ctx, cancel = context.WithTimeout(parentCtx, 1*time.Second)
+	defer cancel()
 	ctx, innerSpan = trace.StartSpan(ctx, "ReleaseReservation")
-	success, err := client.ReleaseReservation(nil, &transactionParams)
+	success, err := client.ReleaseReservation(ctx, &transactionParams)
 	innerSpan.End()
 	fmt.Println("\n\nRELEASE:")
 	if err != nil {

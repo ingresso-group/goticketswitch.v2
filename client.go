@@ -133,9 +133,7 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		return
 	}
 	r.Header = req.Header
-	if ctx != nil {
-		r = r.WithContext(ctx)
-	}
+	r = r.WithContext(ctx)
 
 	resp, err = client.HTTPClient.Do(r)
 	if err != nil {
