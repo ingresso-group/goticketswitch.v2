@@ -5,7 +5,7 @@ type Media struct {
 	// caption in plain text describing the asset.
 	Caption string
 	// caption as html describing the asset.
-	Caption_html string
+	CaptionHTML string
 	// name of the asset.
 	Name string
 	// url for the asset.
