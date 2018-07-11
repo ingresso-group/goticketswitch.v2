@@ -19,7 +19,7 @@ func TestGetURL(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 	u, err := client.getURL(req)
 	if assert.Nil(t, err) {
 		assert.Equal(t, u.String(), "https://super.awesome.tickets/f13/events.v1")
@@ -32,7 +32,7 @@ func TestGetURL_bad(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 	_, err := client.getURL(req)
 	assert.NotNil(t, err)
 }
@@ -43,7 +43,7 @@ func TestGetURL_with_values(t *testing.T) {
 	}
 	client := NewClient(config)
 
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 	req.Values.Add("foo", "bar")
 	req.Values.Add("lol", "beans")
 	req.Values.Add("lol", "icoptor")
@@ -61,7 +61,7 @@ func TestGetURL_with_crypto_block(t *testing.T) {
 		User:        "fred_flintstone",
 	}
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -83,7 +83,7 @@ func TestGetURL_with_sub_user(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
 	u, err := client.getURL(req)
 
@@ -100,7 +100,7 @@ func TestSetHeaders(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
 	err := client.setHeaders(req)
 
@@ -155,9 +155,9 @@ func TestDo_post(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
+	req := NewRequest("POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(context.Background(), req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
@@ -187,9 +187,9 @@ func TestDo_get(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(context.Background(), req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
@@ -204,9 +204,9 @@ func TestDo_with_bad_base_url(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
-	_, err := client.Do(req)
+	_, err := client.Do(context.Background(), req)
 
 	assert.NotNil(t, err)
 }
@@ -225,9 +225,9 @@ func TestDo_with_header_issues(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "GET", "events.v1", nil)
+	req := NewRequest("GET", "events.v1", nil)
 
-	_, err := client.Do(req)
+	_, err := client.Do(context.Background(), req)
 
 	assert.NotNil(t, err)
 }
@@ -247,9 +247,9 @@ func TestDo_post_with_unmarshalable_body(t *testing.T) {
 
 	client := NewClient(config)
 	// func cannot be marshalled
-	req := NewRequest(context.Background(), "POST", "events.v1", func() { t.Fatal("this should not run") })
+	req := NewRequest("POST", "events.v1", func() { t.Fatal("this should not run") })
 
-	_, err := client.Do(req)
+	_, err := client.Do(context.Background(), req)
 
 	assert.NotNil(t, err)
 }
@@ -269,9 +269,9 @@ func TestDo_unrequestable_request(t *testing.T) {
 
 	client := NewClient(config)
 	// unicode in the method is a nono
-	req := NewRequest(context.Background(), "£££££", "events.v1", nil)
+	req := NewRequest("£££££", "events.v1", nil)
 
-	_, err := client.Do(req)
+	_, err := client.Do(context.Background(), req)
 
 	assert.NotNil(t, err)
 }
@@ -286,9 +286,9 @@ func TestDo_error_when_doing(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	req := NewRequest(context.Background(), "POST", "events.v1", nil)
+	req := NewRequest("POST", "events.v1", nil)
 
-	_, err := client.Do(req)
+	_, err := client.Do(context.Background(), req)
 
 	assert.NotNil(t, err)
 }

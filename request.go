@@ -1,7 +1,6 @@
 package ticketswitch
 
 import (
-	"context"
 	"net/http"
 	"net/url"
 )
@@ -15,18 +14,16 @@ type Request struct {
 	Body     interface{}
 	Puzzled  bool
 	LogRaw   bool
-	Context  context.Context
 }
 
 // NewRequest returns a pointer to a new created Request
-func NewRequest(ctx context.Context, method, endpoint string, body interface{}) *Request {
+func NewRequest(method, endpoint string, body interface{}) *Request {
 	r := Request{
 		Method:   method,
 		Endpoint: endpoint,
 		Header:   make(http.Header),
 		Values:   make(url.Values),
 		Body:     body,
-		Context:  ctx,
 	}
 
 	return &r
