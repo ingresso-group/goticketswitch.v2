@@ -43,7 +43,7 @@ const (
 )
 
 type TicketswitchClient interface {
-	Do(req *Request) (resp *http.Response, err error)
+	Do(ctx context.Context, req *Request) (resp *http.Response, err error)
 	Test(ctx context.Context) (*User, error)
 	ListEvents(ctx context.Context, params *ListEventsParams) (*ListEventsResults, error)
 	GetEvents(ctx context.Context, eventIDs []string, params *UniversalParams) (map[string]*Event, error)
