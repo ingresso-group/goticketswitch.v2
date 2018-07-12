@@ -139,7 +139,7 @@ func (client *Client) setHeaders(r *Request) error {
 
 // Do makes a request to the API
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
-	ctx, span := trace.StartSpan(req.Context, "goticketswitch.(*Client).Do")
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).Do")
 	defer span.End()
 
 	u, err := client.getURL(req)
