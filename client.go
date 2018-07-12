@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"go.opencensus.io/trace"
 )
 
 const (
@@ -35,12 +37,34 @@ const (
 	SortRecent = "recent"
 	// SortLastSale sorts results by the products that sold the most recently.
 	SortLastSale = "last_sale"
+
+	// DefaultUserAgent is the default HTTP User Agent used when making API requests.
+	DefaultUserAgent = "goticketswitch"
 )
+
+type TicketswitchClient interface {
+	Do(req *Request) (resp *http.Response, err error)
+	Test(ctx context.Context) (*User, error)
+	ListEvents(ctx context.Context, params *ListEventsParams) (*ListEventsResults, error)
+	GetEvents(ctx context.Context, eventIDs []string, params *UniversalParams) (map[string]*Event, error)
+	GetEvent(ctx context.Context, eventID string, params *UniversalParams) (*Event, error)
+	ListPerformances(ctx context.Context, params *ListPerformancesParams) (*ListPerformancesResults, error)
+	GetAvailability(ctx context.Context, perf string, params *GetAvailabilityParams) (*AvailabilityResult, error)
+	GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error)
+	GetSources(ctx context.Context, params *UniversalParams) (*SourcesResult, error)
+	GetSendMethods(ctx context.Context, perf string, params *UniversalParams) (*SendMethodsResults, error)
+	MakeReservation(ctx context.Context, params *MakeReservationParams) (*ReservationResult, error)
+	ReleaseReservation(ctx context.Context, params *TransactionParams) (success bool, err error)
+	MakePurchase(ctx context.Context, params *MakePurchaseParams) (*MakePurchaseResult, error)
+	GetStatus(ctx context.Context, params *TransactionParams) (*StatusResult, error)
+	GetMonths(ctx context.Context, params *GetMonthsParams) (*MonthsResult, error)
+}
 
 // Client wraps the ticketswitch f13 API.
 type Client struct {
 	Config     *Config
 	HTTPClient *http.Client
+	UserAgent  string
 }
 
 // NewClient returns a pointer to a newly created client.
@@ -48,6 +72,7 @@ func NewClient(config *Config) *Client {
 	client := Client{
 		Config:     config,
 		HTTPClient: http.DefaultClient,
+		UserAgent:  DefaultUserAgent,
 	}
 	return &client
 }
@@ -104,11 +129,19 @@ func (client *Client) setHeaders(r *Request) error {
 
 		r.Header.Set("Authorization", "Basic "+basicAuth(client.Config.User, client.Config.Password))
 	}
+
+	if client.UserAgent != "" {
+		r.Header.Set("User-Agent", client.UserAgent)
+	}
+
 	return nil
 }
 
 // Do makes a request to the API
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
+	ctx, span := trace.StartSpan(req.Context, "goticketswitch.(*Client).Do")
+	defer span.End()
+
 	u, err := client.getURL(req)
 	if err != nil {
 		return
@@ -147,8 +180,12 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 
 // Test tests the API connection returning a User on success
 func (client *Client) Test(ctx context.Context) (*User, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).Test")
+	defer span.End()
+
 	req := NewRequest("GET", "test.v1", nil)
 	resp, err := client.Do(ctx, req)
+
 	if err != nil {
 		return nil, err
 	}
@@ -329,7 +366,10 @@ func (params *ListEventsParams) Params() map[string]string {
 
 // ListEvents returns a paginated slice of Events from the API.
 func (client *Client) ListEvents(ctx context.Context, params *ListEventsParams) (*ListEventsResults, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ListEvents")
+	defer span.End()
 	req := NewRequest(http.MethodGet, "events.v1", nil)
+
 	if params != nil {
 		req.SetValues(params.Params())
 	}
@@ -383,6 +423,9 @@ type getEventResults struct {
 
 // GetEvents returns a map of events index by event ID from the API.
 func (client *Client) GetEvents(ctx context.Context, eventIDs []string, params *UniversalParams) (map[string]*Event, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetEvents")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "events_by_id.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
@@ -416,6 +459,9 @@ var ErrEventNotFound = errors.New("ticketswitch: event not found")
 
 // GetEvent returns an Event fetched from the API
 func (client *Client) GetEvent(ctx context.Context, eventID string, params *UniversalParams) (*Event, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetEvent")
+	defer span.End()
+
 	events, err := client.GetEvents(ctx, []string{eventID}, params)
 
 	if err != nil {
@@ -465,6 +511,9 @@ func (params *ListPerformancesParams) Params() map[string]string {
 
 // ListPerformances fetches a slice of performances from the API
 func (client *Client) ListPerformances(ctx context.Context, params *ListPerformancesParams) (*ListPerformancesResults, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ListPerformances")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "performances.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
@@ -487,6 +536,9 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 
 // GetAvailability fetches availability for a performce from the API
 func (client *Client) GetAvailability(ctx context.Context, perf string, params *GetAvailabilityParams) (*AvailabilityResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetAvailability")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "availability.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
@@ -510,6 +562,9 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 
 // GetDiscounts fetches the Discounts for a particular performance, ticket type and price band from the API
 func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetDiscounts")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "discounts.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
@@ -536,6 +591,9 @@ func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeC
 // GetSources fetches the available sources (a.k.a. backend systems) from the
 // API
 func (client *Client) GetSources(ctx context.Context, params *UniversalParams) (*SourcesResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetSources")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "sources.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
@@ -561,6 +619,9 @@ func (client *Client) GetSources(ctx context.Context, params *UniversalParams) (
 // GetSendMethods fetches the available send methods for a performance from the
 // API
 func (client *Client) GetSendMethods(ctx context.Context, perf string, params *UniversalParams) (*SendMethodsResults, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetSendMethods")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "send_methods.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
@@ -584,6 +645,9 @@ func (client *Client) GetSendMethods(ctx context.Context, perf string, params *U
 
 // MakeReservation places a hold on products in the inventory via the API
 func (client *Client) MakeReservation(ctx context.Context, params *MakeReservationParams) (*ReservationResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).MakeReservation")
+	defer span.End()
+
 	req := NewRequest(http.MethodPost, "reserve.v1", params.Params())
 
 	resp, err := client.Do(ctx, req)
@@ -624,6 +688,9 @@ func (params *TransactionParams) Params() map[string]string {
 // ReleaseReservation makes a best effort attempt to release any reservations
 // made on backend systems for a transaction.
 func (client *Client) ReleaseReservation(ctx context.Context, params *TransactionParams) (success bool, err error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).ReleaseReservation")
+	defer span.End()
+
 	req := NewRequest(http.MethodPost, "release.v1", params.Params())
 
 	resp, err := client.Do(ctx, req)
@@ -689,6 +756,9 @@ func (params *MakePurchaseParams) Params() map[string]string {
 // MakePurchase attempts to purchase a previously reserved transaction via the
 // API
 func (client *Client) MakePurchase(ctx context.Context, params *MakePurchaseParams) (*MakePurchaseResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).MakePurchase")
+	defer span.End()
+
 	req := NewRequest(http.MethodPost, "purchase.v1", params.Params())
 
 	resp, err := client.Do(ctx, req)
@@ -708,6 +778,9 @@ func (client *Client) MakePurchase(ctx context.Context, params *MakePurchasePara
 
 // GetStatus retrieves the transaction from the API
 func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) (*StatusResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetStatus")
+	defer span.End()
+
 	req := NewRequest(http.MethodGet, "status.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
@@ -726,4 +799,41 @@ func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) 
 	}
 
 	return &result, nil
+}
+
+// GetMonths returns a summary of the availability across calendar months for a event.
+func (client *Client) GetMonths(ctx context.Context, params *GetMonthsParams) (*MonthsResult, error) {
+	ctx, span := trace.StartSpan(ctx, "goticketswitch.(*Client).GetMonths")
+	defer span.End()
+
+	req := NewRequest(http.MethodGet, "months.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
+
+	resp, err := client.Do(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	var doc map[string]json.RawMessage
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&doc)
+	if err != nil {
+		return nil, err
+	}
+
+	rawResults, ok := doc["results"]
+	if !ok {
+		return nil, errors.New("ticketswitch: no results in GetMonths response")
+	}
+
+	var results MonthsResult
+	err = json.Unmarshal(rawResults, &results)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &results, nil
 }
