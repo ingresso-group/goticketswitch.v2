@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2018-08-24
+### Fixed
+- Close the response body after we're done with it
+
 ## [1.0.0] - 2018-07-11
 ### Changed
 - Now each request method takes a context, see example/main.go for an example
@@ -32,4 +36,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - exposed DateRange utility
 
-[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/0.0.1...HEAD
+[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/1.0.1...HEAD

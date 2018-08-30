@@ -152,6 +152,7 @@ func (client *Client) Test(ctx context.Context) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var user User
 	decoder := json.NewDecoder(resp.Body)
@@ -338,6 +339,7 @@ func (client *Client) ListEvents(ctx context.Context, params *ListEventsParams) 
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var doc map[string]json.RawMessage
 	decoder := json.NewDecoder(resp.Body)
@@ -394,6 +396,7 @@ func (client *Client) GetEvents(ctx context.Context, eventIDs []string, params *
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var results getEventResults
 	decoder := json.NewDecoder(resp.Body)
@@ -474,6 +477,7 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var doc ListPerformancesTopLevel
 	decoder := json.NewDecoder(resp.Body)
@@ -497,6 +501,7 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var results AvailabilityResult
 	decoder := json.NewDecoder(resp.Body)
@@ -522,6 +527,7 @@ func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeC
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var results DiscountsResult
 	decoder := json.NewDecoder(resp.Body)
@@ -545,6 +551,7 @@ func (client *Client) GetSources(ctx context.Context, params *UniversalParams) (
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var sources []Source
 	decoder := json.NewDecoder(resp.Body)
@@ -571,6 +578,7 @@ func (client *Client) GetSendMethods(ctx context.Context, perf string, params *U
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var results SendMethodsResults
 	decoder := json.NewDecoder(resp.Body)
@@ -590,6 +598,7 @@ func (client *Client) MakeReservation(ctx context.Context, params *MakeReservati
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var reservation ReservationResult
 	decoder := json.NewDecoder(resp.Body)
@@ -630,6 +639,7 @@ func (client *Client) ReleaseReservation(ctx context.Context, params *Transactio
 	if err != nil {
 		return false, err
 	}
+	defer resp.Body.Close()
 
 	var result map[string]bool
 	decoder := json.NewDecoder(resp.Body)
@@ -695,6 +705,7 @@ func (client *Client) MakePurchase(ctx context.Context, params *MakePurchasePara
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var result MakePurchaseResult
 	decoder := json.NewDecoder(resp.Body)
@@ -717,6 +728,7 @@ func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) 
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var result StatusResult
 	decoder := json.NewDecoder(resp.Body)
