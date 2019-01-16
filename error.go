@@ -6,6 +6,9 @@ import (
 	"net/http"
 )
 
+// F13AuthErrorCode is the error code that gets returned for Authentication errors
+const F13AuthErrorCode int = 3
+
 // Error represents an error returned by the API
 type Error struct {
 	Code                int    `json:"error_code"`
@@ -29,7 +32,7 @@ func checkForError(resp *http.Response) error {
 		return err
 	}
 
-	if ret.Code == 3 {
+	if ret.Code == F13AuthErrorCode {
 		ret.AuthenticationError = true
 	}
 	if ret.Code > 0 || ret.Description != "" || ret.AuthenticationError || ret.CallbackGoneError {
