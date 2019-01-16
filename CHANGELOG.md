@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.2] - 2019-01-16
+### Added
+- Check for Callback Gone and Authentication errors
+
 ## [1.0.1] - 2018-08-24
 ### Fixed
 - Close the response body after we're done with it
@@ -36,4 +40,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - exposed DateRange utility
 
-[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/1.0.2...HEAD

@@ -1,6 +1,7 @@
 package ticketswitch
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -37,5 +38,45 @@ func TestCheckForError(t *testing.T) {
 	response = responseWriter.Result()
 	err = checkForError(response)
 	assert.NotNil(t, err)
-	assert.IsType(t, Error{}, err)
+	ticketswitchErr, ok := err.(Error)
+	if !ok {
+		t.Fatal("Should be able to convert error into Error type")
+	}
+	assert.False(t, ticketswitchErr.CallbackGoneError)
+	assert.False(t, ticketswitchErr.AuthenticationError)
+}
+
+func TestCheckForError_AuthenticationError(t *testing.T) {
+	data := []byte(`{
+	"error_code": 3,
+	"error_desc": "Authentication Error"}`)
+	responseWriter := httptest.NewRecorder()
+	responseWriter.Write(data)
+	response := responseWriter.Result()
+	err := checkForError(response)
+
+	assert.NotNil(t, err)
+	ticketswitchErr, ok := err.(Error)
+	if !ok {
+		t.Fatal("Should be able to convert error into Error type")
+	}
+	assert.True(t, ticketswitchErr.AuthenticationError)
+}
+
+func TestCheckForError_CallbackGoneError(t *testing.T) {
+	data := []byte(`{
+	"error_code": 123,
+	"error_desc": "Callback Gone Error"}`)
+	responseWriter := httptest.NewRecorder()
+	responseWriter.WriteHeader(http.StatusGone)
+	responseWriter.Write(data)
+	response := responseWriter.Result()
+	err := checkForError(response)
+
+	assert.NotNil(t, err)
+	ticketswitchErr, ok := err.(Error)
+	if !ok {
+		t.Fatal("Should be able to convert error into Error type")
+	}
+	assert.True(t, ticketswitchErr.CallbackGoneError)
 }
