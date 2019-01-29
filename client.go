@@ -666,6 +666,7 @@ func (client *Client) ReleaseReservation(ctx context.Context, params *Transactio
 type MakePurchaseParams struct {
 	UniversalParams
 	TransactionUUID       string
+	AgentReference        string
 	Customer              Customer
 	PaymentMethod         PaymentMethod
 	SendConfirmationEmail bool
@@ -675,6 +676,10 @@ type MakePurchaseParams struct {
 func (params *MakePurchaseParams) Params() map[string]string {
 	values := map[string]string{
 		"transaction_uuid": params.TransactionUUID,
+	}
+
+	if params.AgentReference != "" {
+		values["agent_reference"] = params.AgentReference
 	}
 
 	if params.SendConfirmationEmail {
