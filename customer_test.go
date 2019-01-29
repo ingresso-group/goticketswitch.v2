@@ -23,7 +23,6 @@ func TestCustomer_Params(t *testing.T) {
 		Phone:                      "001",
 		WorkPhone:                  "002",
 		HomePhone:                  "002",
-		AgentRef:                   "abcd1234",
 		SupplierCanUseCustomerData: true,
 		UserCanUseCustomerData:     true,
 		WorldCanUseCustomerData:    true,
@@ -43,7 +42,6 @@ func TestCustomer_Params(t *testing.T) {
 	assert.Equal(t, "001", params["phone"])
 	assert.Equal(t, "002", params["work_phone"])
 	assert.Equal(t, "002", params["home_phone"])
-	assert.Equal(t, "abcd1234", params["agent_ref"])
 	assert.Equal(t, "1", params["supplier_can_use_customer_data"])
 	assert.Equal(t, "1", params["user_can_use_customer_data"])
 	assert.Equal(t, "1", params["world_can_use_customer_data"])

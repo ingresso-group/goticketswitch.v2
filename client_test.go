@@ -1361,6 +1361,7 @@ func TestMakePurchaseParams_without_payment_method(t *testing.T) {
 			LastName:  "Rubble",
 		},
 		SendConfirmationEmail: true,
+		AgentReference:        "AgentReference",
 	}
 
 	values := params.Params()
@@ -1368,6 +1369,7 @@ func TestMakePurchaseParams_without_payment_method(t *testing.T) {
 	assert.Equal(t, "abc123", values["custom_tracking_id"])
 	assert.Equal(t, "Barney", values["first_name"])
 	assert.Equal(t, "Rubble", values["last_name"])
+	assert.Equal(t, "AgentReference", values["agent_reference"])
 	assert.Equal(t, "1", values["send_confirmation_email"])
 }
 
@@ -1428,16 +1430,16 @@ func TestMakePurchase_success(t *testing.T) {
 			},
 		}, result.Currency)
 		assert.Equal(t, Customer{
-			FirstName:      "Test",
-			LastName:       "Tester",
-			AddressLineOne: "Metro Building",
-			AddressLineTwo: "1 Butterwick",
-			CountryCode:    "uk",
-			EmailAddress:   "testing@gmail.com",
-			WorkPhone:      "0203 137 7420",
-			HomePhone:      "0203 137 7420",
-			Postcode:       "W6 8DL",
-			Town:           "London",
+			FirstName:                  "Test",
+			LastName:                   "Tester",
+			AddressLineOne:             "Metro Building",
+			AddressLineTwo:             "1 Butterwick",
+			CountryCode:                "uk",
+			EmailAddress:               "testing@gmail.com",
+			WorkPhone:                  "0203 137 7420",
+			HomePhone:                  "0203 137 7420",
+			Postcode:                   "W6 8DL",
+			Town:                       "London",
 			SupplierCanUseCustomerData: false,
 			UserCanUseCustomerData:     true,
 			WorldCanUseCustomerData:    false,
