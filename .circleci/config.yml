@@ -17,7 +17,7 @@ jobs:
           command: go test -race -coverprofile=coverage.txt -covermode=atomic
       - run:
           name: Report code coverage
-          command: bash <(curl -s https://codecov.io/bash) -t "097f6f1f-d9b5-4f8c-b101-edb9bbb013ac" || echo "Coverage not reported"
+          command: bash <(curl -s https://codecov.io/bash) -t "172993e7-77a9-4aad-a9ef-6319b1a2d51d" || echo "Coverage not reported"
 
 workflows:
   version: 2
