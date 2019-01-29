@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.0.3] - 2019-01-29
 ### Added
 - Added in the AgentReference field to MakePurchase
+- Added in the data protection questions, SupplierCanUseCustomerData, UserCanUseCustomerData and WorldCanUseCustomerData to MakePurchase (all default to false)
 
 ## [1.0.2] - 2019-01-16
 ### Added
