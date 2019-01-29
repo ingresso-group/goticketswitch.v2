@@ -15,7 +15,6 @@ type Customer struct {
 	Phone                      string `json:"phone"`
 	WorkPhone                  string `json:"work_phone"`
 	HomePhone                  string `json:"home_phone"`
-	AgentRef                   string `json:"agent_ref"`
 	AddressLineOne             string `json:"addr_line_one"`
 	AddressLineTwo             string `json:"addr_line_two"`
 	SupplierCanUseCustomerData bool   `json:"supplier_can_use_customer_data"`
@@ -39,7 +38,6 @@ func (customer *Customer) Params() map[string]string {
 		"phone":                          customer.Phone,
 		"work_phone":                     customer.WorkPhone,
 		"home_phone":                     customer.HomePhone,
-		"agent_ref":                      customer.AgentRef,
 		"address_line_one":               customer.AddressLineOne,
 		"address_line_two":               customer.AddressLineTwo,
 		"supplier_can_use_customer_data": "0",

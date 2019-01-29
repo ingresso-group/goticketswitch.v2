@@ -665,14 +665,11 @@ func (client *Client) ReleaseReservation(ctx context.Context, params *Transactio
 // specified in the customer information).
 type MakePurchaseParams struct {
 	UniversalParams
-	TransactionUUID            string
-	AgentReference             string
-	Customer                   Customer
-	PaymentMethod              PaymentMethod
-	SendConfirmationEmail      bool
-	SupplierCanUseCustomerData bool
-	UserCanUseCustomerData     bool
-	WorldCanUseCustomerData    bool
+	TransactionUUID       string
+	AgentReference        string
+	Customer              Customer
+	PaymentMethod         PaymentMethod
+	SendConfirmationEmail bool
 }
 
 // Params returns the parameters needed to make the purchase call.
@@ -687,15 +684,6 @@ func (params *MakePurchaseParams) Params() map[string]string {
 
 	if params.SendConfirmationEmail {
 		values["send_confirmation_email"] = "1"
-	}
-	if params.SupplierCanUseCustomerData {
-		values["supplier_can_use_customer_data"] = "1"
-	}
-	if params.UserCanUseCustomerData {
-		values["user_can_use_customer_data"] = "1"
-	}
-	if params.WorldCanUseCustomerData {
-		values["world_can_use_customer_data"] = "1"
 	}
 
 	for k, v := range params.Customer.Params() {
