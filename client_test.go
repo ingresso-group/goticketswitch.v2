@@ -3,6 +3,7 @@ package ticketswitch
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -938,9 +939,9 @@ func TestListPerformances_error(t *testing.T) {
 }
 
 func TestGetAvailability(t *testing.T) {
-	availabilityJSON, error := ioutil.ReadFile("test_data/availability.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/availability.json")
+	availabilityJSON, err := ioutil.ReadFile("testdata/availability.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/availability.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -973,9 +974,9 @@ func TestGetAvailability(t *testing.T) {
 }
 
 func TestGetDiscounts(t *testing.T) {
-	discountsJSON, error := ioutil.ReadFile("test_data/discounts.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/discounts.json")
+	discountsJSON, err := ioutil.ReadFile("testdata/discounts.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/discounts.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1017,9 +1018,9 @@ func TestGetDiscounts(t *testing.T) {
 }
 
 func TestGetSources(t *testing.T) {
-	sourcesJSON, error := ioutil.ReadFile("test_data/sources.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/sources.json")
+	sourcesJSON, err := ioutil.ReadFile("testdata/sources.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/sources.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1050,9 +1051,9 @@ func TestGetSources(t *testing.T) {
 }
 
 func TestGetSourcesWithReqSrcInfo(t *testing.T) {
-	sourcesJSON, error := ioutil.ReadFile("test_data/sources_req_src_info.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/sources_req_src_info.json")
+	sourcesJSON, err := ioutil.ReadFile("testdata/sources_req_src_info.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/sources_req_src_info.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1132,9 +1133,9 @@ func TestGetSourcesError(t *testing.T) {
 }
 
 func TestGetSendMethods(t *testing.T) {
-	sourcesJSON, error := ioutil.ReadFile("test_data/send_methods.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/send_methods.json")
+	sourcesJSON, err := ioutil.ReadFile("testdata/send_methods.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/send_methods.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1173,9 +1174,9 @@ func TestGetSendMethods(t *testing.T) {
 }
 
 func TestMakeReservation(t *testing.T) {
-	reservationJSON, error := ioutil.ReadFile("test_data/reservation.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/reservation.json")
+	reservationJSON, err := ioutil.ReadFile("testdata/reservation.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/reservation.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1227,9 +1228,9 @@ func TestMakeReservation(t *testing.T) {
 }
 
 func TestMakeReservationFailure(t *testing.T) {
-	reservationJSON, error := ioutil.ReadFile("test_data/reservation_failure.json")
-	if error != nil {
-		t.Fatalf("Cannot find test_data/reservation_failure.json")
+	reservationJSON, err := ioutil.ReadFile("testdata/reservation_failure.json")
+	if err != nil {
+		t.Fatalf("Cannot find testdata/reservation_failure.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1387,9 +1388,9 @@ func TestMakePurchaseParams_with_payment_method(t *testing.T) {
 }
 
 func TestMakePurchase_success(t *testing.T) {
-	data, error := ioutil.ReadFile("test_data/purchase-credit-success.json")
-	if error != nil {
-		t.Fatalf("test_data/purchase-credit-success.json")
+	data, err := ioutil.ReadFile("testdata/purchase-credit-success.json")
+	if err != nil {
+		t.Fatalf("testdata/purchase-credit-success.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1460,9 +1461,9 @@ func TestMakePurchase_success(t *testing.T) {
 }
 
 func TestGetStatus(t *testing.T) {
-	data, error := ioutil.ReadFile("test_data/status.json")
-	if error != nil {
-		t.Fatalf("test_data/status.json")
+	data, err := ioutil.ReadFile("testdata/status.json")
+	if err != nil {
+		t.Fatalf("testdata/status.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -1507,5 +1508,58 @@ func TestGetStatus(t *testing.T) {
 		assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
 		assert.Equal(t, result.Trolley.Bundles[0].Orders[0].Event.UpsellList.EventIds, []string{"7AA", "6IF"})
 	}
+}
 
+func TestCancel(t *testing.T) {
+	data, err := ioutil.ReadFile("testdata/cancel.json")
+	if !assert.Nil(t, err) {
+		t.Fatal(err)
+	}
+	transUUID := "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1"
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/cancel.v1", r.URL.Path)
+			assert.Equal(t, http.MethodPost, r.Method)
+			assert.Equal(t, transUUID, r.URL.Query().Get("transaction_uuid"))
+			w.Write([]byte(data))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &CancellationParams{
+		TransactionUUID: transUUID,
+		CancelItemsList: []int{1},
+	}
+	result, err := client.Cancel(context.Background(), params)
+	if assert.Nil(t, err) {
+		assert.Equal(t, map[string]Currency{
+			"gbp": Currency{
+				Code:       "gbp",
+				Places:     2,
+				Factor:     100,
+				PreSymbol:  "£",
+				PostSymbol: "",
+				Number:     826,
+			},
+		}, result.CurrencyDetails)
+		assert.Equal(t, transUUID, result.Trolley.TransactionUUID)
+		assert.True(t, result.Trolley.PurchaseResult.Success)
+		assert.False(t, result.Trolley.PurchaseResult.IsPartial)
+		assert.Equal(t, len(result.Trolley.Bundles), 1)
+		assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
+		assert.Equal(t, result.Trolley.Bundles[0].Orders[0].CancellationStatus, "cancelled")
+	}
+
+}
+
+func TestCancelItemsList_String(t *testing.T) {
+	assert.Equal(t, "1,2,3,4,5", fmt.Sprint(CancelItemsList{1, 2, 3, 4, 5}))
+	assert.Equal(t, "11,12,31,14,79,111", fmt.Sprint(CancelItemsList{11, 12, 31, 14, 79, 111}))
+	assert.Equal(t, "1", fmt.Sprint(CancelItemsList{1}))
+	assert.Equal(t, "", fmt.Sprint(CancelItemsList{}))
 }

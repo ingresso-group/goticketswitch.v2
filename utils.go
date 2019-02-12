@@ -3,6 +3,8 @@ package ticketswitch
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -50,4 +52,14 @@ func DateRange(from time.Time, to time.Time) string {
 		buf.WriteString(to.Format("20060102"))
 	}
 	return buf.String()
+}
+
+// intArrayToString takes an array on ints and returns them as a comma
+// separated string
+func intArrayToString(input []int) string {
+	stringArray := make([]string, len(input))
+	for idx, val := range input {
+		stringArray[idx] = fmt.Sprint(val)
+	}
+	return strings.Join(stringArray, ",")
 }

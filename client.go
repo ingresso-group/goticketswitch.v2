@@ -611,7 +611,7 @@ func (client *Client) MakeReservation(ctx context.Context, params *MakeReservati
 }
 
 // TransactionParams are parameters that can be passed into the
-// Transaction call.
+// ReleaseReservation and GetStatus calls.
 type TransactionParams struct {
 	UniversalParams
 	TransactionUUID string
@@ -736,6 +736,59 @@ func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) 
 	defer resp.Body.Close()
 
 	var result StatusResult
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+type CancellationParams struct {
+	UniversalParams
+	TransactionUUID string
+	CancelItemsList CancelItemsList
+}
+
+type CancelItemsList []int
+
+func (items CancelItemsList) String() string {
+	stringArray := make([]string, len(items))
+	for idx, val := range items {
+		stringArray[idx] = fmt.Sprint(val)
+	}
+	return strings.Join(stringArray, ",")
+
+}
+
+func (params *CancellationParams) Params() map[string]string {
+	values := map[string]string{
+		"transaction_uuid": params.TransactionUUID,
+	}
+	if len(params.CancelItemsList) > 0 {
+		values["cancel_items_list"] = fmt.Sprint(params.CancelItemsList)
+	}
+
+	for k, v := range params.Universal() {
+		values[k] = v
+	}
+	return values
+}
+
+// Cancel cancels transactions via the API
+func (client *Client) Cancel(ctx context.Context, params *CancellationParams) (*CancellationResult, error) {
+	req := NewRequest(http.MethodPost, "cancel.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
+	resp, err := client.Do(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result CancellationResult
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&result)
 	if err != nil {
