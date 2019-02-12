@@ -28,24 +28,27 @@ type TicketOrdersHolder struct {
 }
 
 type Order struct {
-	Event                    Event              `json:"event"`
-	GotRequestedSeats        bool               `json:"got_requested_seats"`
-	ItemNumber               int                `json:"item_number"`
-	Performance              Performance        `json:"performance"`
-	PriceBandCode            string             `json:"price_band_code"`
-	RequestedSeatIDs         []string           `json:"requested_seat_ids"`
-	ReserveFailureComment    string             `json:"reserve_failure_comment"`
-	SeatRequestStatus        string             `json:"seat_request_status"`
-	SendMethod               SendMethod         `json:"send_method"`
-	TicketOrdersHolder       TicketOrdersHolder `json:"ticket_orders"`
-	TicketTypeCode           string             `json:"ticket_type_code"`
-	TicketTypeDesc           string             `json:"ticket_type_desc"`
-	TotalNumberOfSeats       int                `json:"total_no_of_seats"`
-	TotalSaleSeatprice       decimal.Decimal    `json:"total_sale_seatprice"`
-	TotalSaleSurcharge       decimal.Decimal    `json:"total_sale_surcharge"`
-	UserCommission           UserCommission     `json:"user_commission"`
-	GrossCommission          GrossCommission    `json:"gross_commission"`
-	BackendPurchaseReference string             `json:"backend_purchase_reference"`
+	Event                        Event              `json:"event"`
+	CancellationComment          string             `json:"cancellation_comment"`
+	CancellationStatus           string             `json:"cancellation_status"`
+	GotRequestedSeats            bool               `json:"got_requested_seats"`
+	ItemNumber                   int                `json:"item_number"`
+	Performance                  Performance        `json:"performance"`
+	PriceBandCode                string             `json:"price_band_code"`
+	RequestedSeatIDs             []string           `json:"requested_seat_ids"`
+	ReserveFailureComment        string             `json:"reserve_failure_comment"`
+	SeatRequestStatus            string             `json:"seat_request_status"`
+	SendMethod                   SendMethod         `json:"send_method"`
+	TicketOrdersHolder           TicketOrdersHolder `json:"ticket_orders"`
+	TicketTypeCode               string             `json:"ticket_type_code"`
+	TicketTypeDesc               string             `json:"ticket_type_desc"`
+	TotalNumberOfSeats           int                `json:"total_no_of_seats"`
+	TotalSaleSeatprice           decimal.Decimal    `json:"total_sale_seatprice"`
+	TotalSaleSurcharge           decimal.Decimal    `json:"total_sale_surcharge"`
+	UserCommission               UserCommission     `json:"user_commission"`
+	GrossCommission              GrossCommission    `json:"gross_commission"`
+	BackendPurchaseReference     string             `json:"backend_purchase_reference"`
+	BackendCancellationReference string             `json:"backend_cancellation_reference"`
 }
 
 type Bundle struct {
