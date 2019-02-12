@@ -16,9 +16,3 @@ func TestDateRange(t *testing.T) {
 	assert.Equal(t, ":20181121", DateRange(time.Time{}, to))
 	assert.Equal(t, "20170807:20181121", DateRange(from, to))
 }
-
-func TestIntArrayToString(t *testing.T) {
-	assert.Equal(t, "1,2,3,4,5", intArrayToString([]int{1, 2, 3, 4, 5}))
-	assert.Equal(t, "11,12,31,14,79,111", intArrayToString([]int{11, 12, 31, 14, 79, 111}))
-	assert.Equal(t, "", intArrayToString([]int{}))
-}
