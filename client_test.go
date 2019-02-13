@@ -1516,43 +1516,86 @@ func TestCancel(t *testing.T) {
 		t.Fatal(err)
 	}
 	transUUID := "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1"
-	server := httptest.NewServer(http.HandlerFunc(
+	happyServer := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/cancel.v1", r.URL.Path)
 			assert.Equal(t, http.MethodPost, r.Method)
 			assert.Equal(t, transUUID, r.URL.Query().Get("transaction_uuid"))
 			w.Write([]byte(data))
 		}))
-	defer server.Close()
-	config := &Config{
-		BaseURL:  server.URL,
-		User:     "bill",
-		Password: "hahaha",
+	defer happyServer.Close()
+	jsonErrorServer := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("not real json"))
+		}))
+	defer jsonErrorServer.Close()
+	table := []struct {
+		name        string
+		config      *Config
+		shouldError bool
+	}{
+		{
+			name: "happy path",
+			config: &Config{
+				BaseURL:  happyServer.URL,
+				User:     "bill",
+				Password: "hahaha",
+			},
+		},
+		{
+			name: "request error",
+			config: &Config{
+				BaseURL:  "not a real url",
+				User:     "bill",
+				Password: "hahaha",
+			},
+			shouldError: true,
+		},
+		{
+			name: "decoder error",
+			config: &Config{
+				BaseURL:  jsonErrorServer.URL,
+				User:     "bill",
+				Password: "hahaha",
+			},
+			shouldError: true,
+		},
 	}
 
-	client := NewClient(config)
-	params := &CancellationParams{
-		TransactionUUID: transUUID,
-		CancelItemsList: []int{1},
-	}
-	result, err := client.Cancel(context.Background(), params)
-	if assert.Nil(t, err) {
-		assert.Equal(t, map[string]Currency{
-			"gbp": Currency{
-				Code:       "gbp",
-				Places:     2,
-				Factor:     100,
-				PreSymbol:  "£",
-				PostSymbol: "",
-				Number:     826,
-			},
-		}, result.CurrencyDetails)
-		assert.Equal(t, transUUID, result.Trolley.TransactionUUID)
-		assert.True(t, result.Trolley.PurchaseResult.Success)
-		assert.False(t, result.Trolley.PurchaseResult.IsPartial)
-		assert.Equal(t, len(result.Trolley.Bundles), 1)
-		assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
-		assert.Equal(t, result.Trolley.Bundles[0].Orders[0].CancellationStatus, "cancelled")
+	for _, test := range table {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.config)
+			params := &CancellationParams{
+				TransactionUUID: transUUID,
+				CancelItemsList: []int{1},
+			}
+			result, err := client.Cancel(context.Background(), params)
+			if test.shouldError {
+				if !assert.NotNil(t, err) {
+					t.Fatal("expected an error!")
+				}
+			} else {
+				if !assert.Nil(t, err) {
+					t.Fatal(err)
+				}
+				assert.Equal(t, map[string]Currency{
+					"gbp": Currency{
+						Code:       "gbp",
+						Places:     2,
+						Factor:     100,
+						PreSymbol:  "£",
+						PostSymbol: "",
+						Number:     826,
+					},
+				}, result.CurrencyDetails)
+				assert.Equal(t, transUUID, result.Trolley.TransactionUUID)
+				assert.True(t, result.Trolley.PurchaseResult.Success)
+				assert.False(t, result.Trolley.PurchaseResult.IsPartial)
+				assert.Equal(t, len(result.Trolley.Bundles), 1)
+				assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
+				assert.Equal(t, result.Trolley.Bundles[0].Orders[0].CancellationStatus, "cancelled")
+			}
+		})
 	}
 
 }
