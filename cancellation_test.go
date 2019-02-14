@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	. "github.com/ingresso-group/goticketswitch.v2"
+	ticketswitch "github.com/ingresso-group/goticketswitch.v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +38,7 @@ func TestCancellationResult_IsFullyCancelled(t *testing.T) {
 			if !assert.Nil(t, err) {
 				t.Fatal(err)
 			}
-			cancellation := &CancellationResult{}
+			cancellation := &ticketswitch.CancellationResult{}
 			err = json.Unmarshal(testdata, cancellation)
 			if !assert.Nil(t, err) {
 				t.Fatal(err)

@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: go get
-          command: go get -t -d -v ./...
+          command: go get -t -d -v -f -u ./...
       - run:
           name: coverage
           command: go test -race -coverprofile=coverage.txt -covermode=atomic
