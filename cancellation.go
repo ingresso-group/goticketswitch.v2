@@ -7,3 +7,20 @@ type CancellationResult struct {
 	Trolley              Trolley             `json:"trolley_contents"`
 	CurrencyDetails      map[string]Currency `json:"currency_details"`
 }
+
+// IsFullyCancelled checks the CancellationResult to see if the cancellation
+// successfully cancelled all orders within the Trolley. If some orders are
+// cancelled and others aren't then this will return false.
+func (result *CancellationResult) IsFullyCancelled() bool {
+	cancelled := true
+	// Check if the trolley is empty
+	if len(result.Trolley.Bundles) == 0 {
+		return false
+	}
+	for _, bundle := range result.Trolley.Bundles {
+		for _, order := range bundle.Orders {
+			cancelled = cancelled && order.CancellationStatus == "cancelled"
+		}
+	}
+	return cancelled
+}

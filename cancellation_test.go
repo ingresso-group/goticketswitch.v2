@@ -1,0 +1,49 @@
+package ticketswitch_test
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"testing"
+
+	ticketswitch "github.com/ingresso-group/goticketswitch.v2"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestCancellationResult_IsFullyCancelled(t *testing.T) {
+	table := []struct {
+		name           string
+		testdata       string
+		expectedResult bool
+	}{
+		{
+			name:           "Successful cancellation",
+			testdata:       "testdata/cancel.json",
+			expectedResult: true,
+		},
+		{
+			name:           "Must also cancel response",
+			testdata:       "testdata/must_also_cancel.json",
+			expectedResult: false,
+		},
+		{
+			name:           "Partial cancellation",
+			testdata:       "testdata/partial_cancel.json",
+			expectedResult: false,
+		},
+	}
+
+	for _, test := range table {
+		t.Run(test.name, func(t *testing.T) {
+			testdata, err := ioutil.ReadFile(test.testdata)
+			if !assert.Nil(t, err) {
+				t.Fatal(err)
+			}
+			cancellation := &ticketswitch.CancellationResult{}
+			err = json.Unmarshal(testdata, cancellation)
+			if !assert.Nil(t, err) {
+				t.Fatal(err)
+			}
+			assert.Equal(t, test.expectedResult, cancellation.IsFullyCancelled())
+		})
+	}
+}
