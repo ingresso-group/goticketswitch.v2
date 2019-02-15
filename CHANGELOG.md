@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.4] - 2019-02-15
+### Added
+- Added Cancel endpoint
+
 ## [1.0.3] - 2019-01-29
 ### Changed
 - Moved AgentReference field from Customer to MakePurchase
@@ -44,4 +48,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - exposed DateRange utility
 
-[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/1.0.2...HEAD
+[Unreleased]: https://github.com/ingresso-group/goticketswitch.v2/compare/1.0.4...HEAD
