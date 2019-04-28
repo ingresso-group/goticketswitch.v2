@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.5] - 2019-04-28
+### Added
+- Add price band description to availability
+
 ## [1.0.4] - 2019-02-15
 ### Added
 - Added Cancel endpoint

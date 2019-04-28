@@ -11,6 +11,7 @@ import (
 // discount code, this is normally the most expensive discount option available
 type PriceBand struct {
 	Code                     string                `json:"price_band_code"`
+	Desc                     string                `json:"price_band_description"`
 	DiscountCode             string                `json:"discount_code"`
 	DiscountDesc             string                `json:"discount_desc"`
 	NumberAvailable          int                   `json:"number_available"`
