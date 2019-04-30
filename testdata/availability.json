@@ -14,8 +14,40 @@
             "number_available": 6,
             "percentage_saving": 0,
             "price_band_code": "A/pool",
+            "price_band_description" : "TEST PB1",
             "sale_seatprice": 50,
-            "sale_surcharge": 5
+            "sale_surcharge": 5,
+            "possible_discounts": {
+                "discount" : [
+                    {
+                        "sale_seatprice" : 35,
+                        "percentage_saving" : 0,
+                        "allows_leaving_single_seats" : "always",
+                        "non_offer_sale_surcharge" : 4,
+                        "number_available" : 6,
+                        "is_offer" : false,
+                        "absolute_saving" : 0,
+                        "discount_desc" : "Adult",
+                        "discount_code" : "ADULT",
+                        "sale_surcharge" : 4,
+                        "non_offer_sale_seatprice" : 35
+                    },
+                    {
+                        "number_available" : 6,
+                        "is_offer" : false,
+                        "price_band_code" : "A/pool",
+                        "sale_seatprice" : 18,
+                        "percentage_saving" : 0,
+                        "allows_leaving_single_seats" : "always",
+                        "non_offer_sale_surcharge" : 3,
+                        "sale_surcharge" : 3,
+                        "non_offer_sale_seatprice" : 18,
+                        "absolute_saving" : 0,
+                        "discount_code" : "CHILD",
+                        "discount_desc" : "Child rate"
+                    }
+                ]
+            }
           },
           {
             "absolute_saving": 0,
@@ -28,6 +60,7 @@
             "number_available": 6,
             "percentage_saving": 0,
             "price_band_code": "B/pool",
+            "price_band_description" : "TEST PB2",
             "sale_seatprice": 40,
             "sale_surcharge": 5
           }
@@ -48,6 +81,7 @@
             "number_available": 6,
             "percentage_saving": 0,
             "price_band_code": "A/pool",
+            "price_band_description" : "TEST PB3",
             "sale_seatprice": 35,
             "sale_surcharge": 5
           },
@@ -62,6 +96,7 @@
             "number_available": 6,
             "percentage_saving": 0,
             "price_band_code": "B/pool",
+            "price_band_description" : "TEST PB4",
             "sale_seatprice": 30,
             "sale_surcharge": 5
           }

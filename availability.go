@@ -27,6 +27,7 @@ type PriceBand struct {
 	RestrictedViewSeatsRaw   []string              `json:"restricted_view_seats_raw"`
 	SeatsByTextMessageRaw    []string              `json:"seats_by_text_message_raw"`
 	PredictedUserCommission  UserCommission        `json:"predicted_user_commission"`
+	PossibleDiscounts        DiscountsHolder       `json:"possible_discounts"`
 }
 
 // TicketType describes a sub set of available tickets defined by some non

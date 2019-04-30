@@ -959,6 +959,7 @@ func TestGetAvailability(t *testing.T) {
 	client := NewClient(config)
 	params := GetAvailabilityParams{
 		NumberOfSeats: 2,
+		Discounts:     true,
 	}
 	results, err := client.GetAvailability(context.Background(), "7AA-5", &params)
 
@@ -970,6 +971,8 @@ func TestGetAvailability(t *testing.T) {
 		assert.Equal(t, len(results.Availability.TicketTypes), 2)
 		assert.Equal(t, len(results.Availability.TicketTypes[0].PriceBands), 2)
 		assert.Equal(t, len(results.Availability.TicketTypes[1].PriceBands), 2)
+		assert.Equal(t, len(results.Availability.TicketTypes[0].PriceBands[0].PossibleDiscounts.Discounts), 2)
+		assert.Equal(t, results.Availability.TicketTypes[0].PriceBands[0].Desc, "TEST PB1")
 	}
 }
 
