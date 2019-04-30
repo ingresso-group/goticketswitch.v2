@@ -972,6 +972,7 @@ func TestGetAvailability(t *testing.T) {
 		assert.Equal(t, len(results.Availability.TicketTypes[0].PriceBands), 2)
 		assert.Equal(t, len(results.Availability.TicketTypes[1].PriceBands), 2)
 		assert.Equal(t, len(results.Availability.TicketTypes[0].PriceBands[0].PossibleDiscounts.Discounts), 2)
+		assert.Equal(t, results.Availability.TicketTypes[0].PriceBands[0].Desc, "TEST PB1")
 	}
 }
 
