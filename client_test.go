@@ -959,7 +959,7 @@ func TestGetAvailability(t *testing.T) {
 	client := NewClient(config)
 	params := GetAvailabilityParams{
 		NumberOfSeats: 2,
-        Discounts: true,
+		Discounts:     true,
 	}
 	results, err := client.GetAvailability(context.Background(), "7AA-5", &params)
 
