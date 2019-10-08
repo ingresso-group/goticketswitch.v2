@@ -70,6 +70,7 @@ func TestVerifyingEmail(t *testing.T) {
 				fmt.Fprintln(w, test.returnedResponse)
 			}
 		}))
+        defer ts.Close()
 		cfg := &Config{
 			BaseURL:  ts.URL,
 			User:     "test",
