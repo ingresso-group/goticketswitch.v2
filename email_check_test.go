@@ -64,6 +64,8 @@ func TestVerifyingEmail(t *testing.T) {
 
 	for _, test := range table {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodGet, r.Method)
+			assert.Equal(t, test.email, r.URL.Query().Get("email_address"))
 			if test.returnedStatusCode != 200 {
 				http.Error(w, test.returnedResponse, test.returnedStatusCode)
 			} else {
