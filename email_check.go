@@ -13,7 +13,7 @@ func (params *EmailCheckParams) Params() map[string]string {
 	for k, v := range params.Universal() {
 		values[k] = v
 	}
-    values["email_address"] = params.EmailAddress
+	values["email_address"] = params.EmailAddress
 
 	return values
 
