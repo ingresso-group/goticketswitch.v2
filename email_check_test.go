@@ -51,7 +51,7 @@ func TestVerifyingEmail(t *testing.T) {
 		{
 			name:               "Unhandled exception",
 			email:              "test@gmail.com",
-			returnedStatusCode: 460,
+			returnedStatusCode: 500,
 			returnedResponse:   `{"error_code": 2020, "error_desc": "Core broken!"}`,
 			expectedResult: Error{
 				Code:                2020,
