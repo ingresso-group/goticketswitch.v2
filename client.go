@@ -797,3 +797,15 @@ func (client *Client) Cancel(ctx context.Context, params *CancellationParams) (*
 
 	return &result, nil
 }
+
+// EmailCheck will check whether email passed meets
+// RFC822 standard, returning error if not.
+func (client *Client) EmailCheck(ctx context.Context, params *EmailCheckParams) error {
+	if params == nil || params.EmailAddress == "" {
+		return errors.New("No email was provided for verification")
+	}
+	req := NewRequest(http.MethodGet, "email_check.v1", nil)
+	req.SetValues(params.Params())
+	_, err := client.Do(ctx, req)
+	return err
+}

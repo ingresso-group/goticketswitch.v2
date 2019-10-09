@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2019-10-08
+### Added
+- Add email check support
+
 ## [1.0.6] - 2019-04-28
 ### Added
 - Add possible discounts to avail response
