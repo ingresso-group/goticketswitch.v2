@@ -15,7 +15,12 @@ import (
 	"time"
 )
 
+type key int
+
 const (
+	// SessionTrackingIdKey is the context key used to set the tracking
+	// id in API Requests.
+	SessionTrackingIdKey key = iota
 	// SortMostPopular sorts results based on sales across all partners over
 	// the last 48 hours
 	SortMostPopular = "most_popular"
@@ -89,7 +94,7 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func (client *Client) setHeaders(r *Request) error {
+func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 	if client.Config.Language != "" {
 		r.Header.Set("Accept-Language", client.Config.Language)
 	}
@@ -104,6 +109,12 @@ func (client *Client) setHeaders(r *Request) error {
 
 		r.Header.Set("Authorization", "Basic "+basicAuth(client.Config.User, client.Config.Password))
 	}
+
+	// Set a session tracking id for this API request.
+	trackingId, ok := ctx.Value(SessionTrackingIdKey).(string)
+	if ok {
+		r.Header.Set("TSW-Session-Track-ID", trackingId)
+	}
 	return nil
 }
 
@@ -113,7 +124,7 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 	if err != nil {
 		return
 	}
-	err = client.setHeaders(req)
+	err = client.setHeaders(ctx, req)
 	if err != nil {
 		return
 	}

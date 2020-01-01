@@ -102,30 +102,32 @@ func TestSetHeaders(t *testing.T) {
 
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
+	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "trackingid")
 
-	err := client.setHeaders(req)
+	err := client.setHeaders(ctx, req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, "en-GB", req.Header.Get("Accept-Language"))
+		assert.Equal(t, "trackingid", req.Header.Get("tsw-session-track-id"))
 		assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", req.Header.Get("Authorization"))
 	}
 
 	req.Header = http.Header{}
 
 	config.Language = ""
-	err = client.setHeaders(req)
+	err = client.setHeaders(ctx, req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, "", req.Header.Get("Accept-Language"))
 	}
 
 	config.User = ""
-	err = client.setHeaders(req)
+	err = client.setHeaders(ctx, req)
 	assert.NotNil(t, err)
 
 	config.User = "fred_flintstone"
 	config.Password = ""
-	err = client.setHeaders(req)
+	err = client.setHeaders(ctx, req)
 	assert.NotNil(t, err)
 }
 
@@ -136,6 +138,7 @@ func TestDo_post(t *testing.T) {
 			assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 			assert.Equal(t, "en-GB", r.Header.Get("Accept-Language"))
 			assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", r.Header.Get("Authorization"))
+			assert.Equal(t, "postid", r.Header.Get("tsw-session-track-id"))
 			assert.Equal(t, "37", r.Header.Get("Content-Length"))
 			body, err := ioutil.ReadAll(r.Body)
 			if assert.Nil(t, err) {
@@ -157,8 +160,8 @@ func TestDo_post(t *testing.T) {
 
 	client := NewClient(config)
 	req := NewRequest("POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
-
-	resp, err := client.Do(context.Background(), req)
+	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "postid")
+	resp, err := client.Do(ctx, req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
@@ -171,6 +174,7 @@ func TestDo_get(t *testing.T) {
 			assert.Equal(t, "/f13/events.v1", r.URL.Path)
 			assert.Equal(t, "en-GB", r.Header.Get("Accept-Language"))
 			assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", r.Header.Get("Authorization"))
+			assert.Equal(t, "foobar123", r.Header.Get("tsw-session-track-id"))
 
 			assert.Equal(t, "", r.Header.Get("Content-Type"))
 			assert.Equal(t, "", r.Header.Get("Content-Length"))
@@ -190,7 +194,8 @@ func TestDo_get(t *testing.T) {
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
 
-	resp, err := client.Do(context.Background(), req)
+	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "foobar123")
+	resp, err := client.Do(ctx, req)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
