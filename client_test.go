@@ -102,7 +102,7 @@ func TestSetHeaders(t *testing.T) {
 
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
-	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "trackingid")
+	ctx := SetSessionTrackingID(context.Background(), "trackingid")
 
 	err := client.setHeaders(ctx, req)
 
@@ -160,7 +160,7 @@ func TestDo_post(t *testing.T) {
 
 	client := NewClient(config)
 	req := NewRequest("POST", "events.v1", map[string]string{"foo": "bar", "lol": "beans"})
-	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "postid")
+	ctx := SetSessionTrackingID(context.Background(), "postid")
 	resp, err := client.Do(ctx, req)
 
 	if assert.Nil(t, err) {
@@ -194,7 +194,7 @@ func TestDo_get(t *testing.T) {
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
 
-	ctx := context.WithValue(context.Background(), SessionTrackingIdKey, "foobar123")
+	ctx := SetSessionTrackingID(context.Background(), "foobar123")
 	resp, err := client.Do(ctx, req)
 
 	if assert.Nil(t, err) {
