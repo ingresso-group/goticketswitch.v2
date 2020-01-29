@@ -1,8 +1,8 @@
 package ticketswitch
-import (
-    "time"
-)
 
+import (
+	"time"
+)
 
 // PerformanceTime describes a possible date and time of a Performance
 type PerformanceTime struct {
