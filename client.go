@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-    // "io/ioutil"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,7 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-    // "github.com/kr/pretty"
 )
 
 const (
