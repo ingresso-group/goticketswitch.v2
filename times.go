@@ -9,13 +9,13 @@ type PerformanceTime struct {
 	// the localised date and time for the performance.
 	Datetime time.Time `json:"iso8601_date_and_time,omitempty"`
 
+	// Human readable description of performance time.
 	TimeDesc string `json:"time_desc,omitempty"`
-	// the number of minutes the performance is expected to run for.
 }
 
 // ListPerformanceTimesResults represents the results from a ListPerformanceTimes call.
 type ListPerformanceTimesResults struct {
-	// performance times returned by the call
+	// Performance times returned by the call
 	Times []PerformanceTime `json:"time,omitempty"`
 }
 
