@@ -938,6 +938,45 @@ func TestListPerformances_error(t *testing.T) {
 	}
 }
 
+TestListPerformanceTimes(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/times.v1", r.URL.Path)
+			r.ParseForm()
+			assert.Equal(t, "ABCD", r.Form.Get("event_id")
+			w.Write([]byte(`{
+				"results": {
+					"time": [
+						{
+							"iso8601_date_and_time": "2020-01-29T14:30:00Z",
+							"time_desc": "2.30 PM"
+						},
+						{
+							"iso8601_date_and_time": "2020-01-29T19:00:00Z",
+							"time_desc": "7.00 PM"
+						},
+						{
+							"iso8601_date_and_time": "2020-01-29T19:30:00Z",
+							"time_desc": "7.30 PM"
+						}
+					]
+				}
+			}`))
+		}
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "michaelcorleone",
+		Password: "NeverTakeSidesAgainstTheFamilyAgain",
+	}
+
+	client := NewClient(config)
+	params := &ListPerformancesParams{
+		EventID: "ABCD",
+	}
+	results, err := client.ListPerformanceTimes(context.Background(), params)
+}
+
 func TestGetAvailability(t *testing.T) {
 	availabilityJSON, err := ioutil.ReadFile("testdata/availability.json")
 	if err != nil {

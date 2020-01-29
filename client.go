@@ -489,6 +489,28 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 	return &doc.Results, nil
 }
 
+// ListPerformanceTimes fetches a slice of unique performance times from the API
+func (client *Client) ListPerformanceTimes(ctx context.Context, params *ListPerformanceParams) (*ListPerformancesTimesResults, error) {
+	req := NewRequest(http.MethodHead, "times.v1", nil)
+	if params != nil {
+		req.SetValues(params.Params())
+	}
+
+	resp, err := client.Do(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var doc ListPerformanceTimesTopLevel
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&doc)
+	if err != nil {
+		return nil, err
+	}
+	return &doc.Results, nil
+}
+
 // GetAvailability fetches availability for a performce from the API
 func (client *Client) GetAvailability(ctx context.Context, perf string, params *GetAvailabilityParams) (*AvailabilityResult, error) {
 	req := NewRequest(http.MethodGet, "availability.v1", nil)
