@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+    // "io/ioutil"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+    // "github.com/kr/pretty"
 )
 
 const (
@@ -490,8 +492,8 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 }
 
 // ListPerformanceTimes fetches a slice of unique performance times from the API
-func (client *Client) ListPerformanceTimes(ctx context.Context, params *ListPerformanceParams) (*ListPerformancesTimesResults, error) {
-	req := NewRequest(http.MethodHead, "times.v1", nil)
+func (client *Client) ListPerformanceTimes(ctx context.Context, params *ListPerformancesParams) (*ListPerformanceTimesResults, error) {
+	req := NewRequest(http.MethodGet, "times.v1", nil)
 	if params != nil {
 		req.SetValues(params.Params())
 	}
