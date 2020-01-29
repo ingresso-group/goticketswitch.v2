@@ -2,7 +2,7 @@ package ticketswitch
 
 import "time"
 
-// Performance describes and occurance of an Event.
+// Performance describes an occurance of an Event.
 type Performance struct {
 	// identifier for the performance.
 	ID string `json:"perf_id"`
