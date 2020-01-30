@@ -108,7 +108,7 @@ func TestSetHeaders(t *testing.T) {
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, "en-GB", req.Header.Get("Accept-Language"))
-		assert.Equal(t, "trackingid", req.Header.Get("tsw-session-track-id"))
+		assert.Equal(t, "trackingid", req.Header.Get("x-request-id"))
 		assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", req.Header.Get("Authorization"))
 	}
 
@@ -138,7 +138,7 @@ func TestDo_post(t *testing.T) {
 			assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 			assert.Equal(t, "en-GB", r.Header.Get("Accept-Language"))
 			assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", r.Header.Get("Authorization"))
-			assert.Equal(t, "postid", r.Header.Get("tsw-session-track-id"))
+			assert.Equal(t, "postid", r.Header.Get("x-request-id"))
 			assert.Equal(t, "37", r.Header.Get("Content-Length"))
 			body, err := ioutil.ReadAll(r.Body)
 			if assert.Nil(t, err) {
@@ -174,7 +174,7 @@ func TestDo_get(t *testing.T) {
 			assert.Equal(t, "/f13/events.v1", r.URL.Path)
 			assert.Equal(t, "en-GB", r.Header.Get("Accept-Language"))
 			assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", r.Header.Get("Authorization"))
-			assert.Equal(t, "foobar123", r.Header.Get("tsw-session-track-id"))
+			assert.Equal(t, "foobar123", r.Header.Get("x-request-id"))
 
 			assert.Equal(t, "", r.Header.Get("Content-Type"))
 			assert.Equal(t, "", r.Header.Get("Content-Length"))
@@ -949,7 +949,7 @@ func TestListPerformanceTimesForMultipleDates(t *testing.T) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
 			r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{ 
+			w.Write([]byte(`{
                 "results": {
                     "time": [
                         {
@@ -996,7 +996,7 @@ func TestListPerformanceTimesForSingleDate(t *testing.T) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
 			r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{ 
+			w.Write([]byte(`{
                 "results": {
                     "time": [
                         {
@@ -1031,7 +1031,7 @@ func TestListPerformanceTimesWithNoDates(t *testing.T) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
 			r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{ 
+			w.Write([]byte(`{
                 "results": {
                     "time": []
                 }

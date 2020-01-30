@@ -108,7 +108,7 @@ func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 	// Set a session tracking id if provided in context
 	trackingId, ok := GetSessionTrackingID(ctx)
 	if ok {
-		r.Header.Set("TSW-Session-Track-ID", trackingId)
+		r.Header.Set("x-request-id", trackingId)
 	}
 	return nil
 }
