@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [1.1.1] - 2020-01-02
+## [1.1.2] - 2020-01-30
 ### Added
 - Ability to set tracking id per request using context
+
+## [1.1.1] - 2020-01-29
+### Added
+- Add support for times.v1 endpoint
 
 ## [1.1.0] - 2019-10-08
 ### Added

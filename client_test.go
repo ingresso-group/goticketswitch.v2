@@ -304,9 +304,9 @@ func TestTest(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/test.v1", r.URL.Path)
 			w.Write([]byte(`{
-				"user_id": "bill",
-				"real_name": "fred"
-			}`))
+                "user_id": "bill",
+                "real_name": "fred"
+            }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -330,9 +330,9 @@ func TestTest_error(t *testing.T) {
 			assert.Equal(t, "/f13/test.v1", r.URL.Path)
 			w.WriteHeader(401)
 			w.Write([]byte(`{
-				"error_code": 3,
-				"error_desc": "User authentication failure"
-			}`))
+                "error_code": 3,
+                "error_desc": "User authentication failure"
+            }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -611,31 +611,31 @@ func TestListEvents(t *testing.T) {
 			r.ParseForm()
 			assert.Equal(t, "foo,bar,lol", r.Form.Get("keywords"))
 			w.Write([]byte(`
-				{
-				  "currency_details": {
-					"gbp": {
-					  "currency_code": "gbp"
-					}
-				  },
-				  "results": {
-					"event": [
-					  {
-						"event_id": "6KT"
-					  },
-					  {
-						"event_id": "I3S"
-					  }
-					],
-					"paging_status": {
-					  "page_length": 2,
-					  "page_number": 1,
-					  "pages_remaining": 18,
-					  "results_remaining": 35,
-					  "total_unpaged_results": 39
-					}
-				  }
-				}
-			`))
+                {
+                  "currency_details": {
+                    "gbp": {
+                      "currency_code": "gbp"
+                    }
+                  },
+                  "results": {
+                    "event": [
+                      {
+                        "event_id": "6KT"
+                      },
+                      {
+                        "event_id": "I3S"
+                      }
+                    ],
+                    "paging_status": {
+                      "page_length": 2,
+                      "page_number": 1,
+                      "pages_remaining": 18,
+                      "results_remaining": 35,
+                      "total_unpaged_results": 39
+                    }
+                  }
+                }
+            `))
 		}))
 
 	defer server.Close()
@@ -704,26 +704,26 @@ func TestGetEvents(t *testing.T) {
 			r.ParseForm()
 			assert.Equal(t, "1AA,2BB,3CC", r.Form.Get("event_id_list"))
 			w.Write([]byte(`
-				{
-				  "events_by_id": {
-					  "1AA": {
-						  "event": {
-							  "event_id": "1AA"
-						  }
-					  },
-					  "2BB": {
-						  "event": {
-							  "event_id": "2BB"
-						  }
-					  },
-					  "3CC": {
-						  "event": {
-							  "event_id": "3CC"
-						  }
-					  }
-				  }
-				}
-			`))
+                {
+                  "events_by_id": {
+                      "1AA": {
+                          "event": {
+                              "event_id": "1AA"
+                          }
+                      },
+                      "2BB": {
+                          "event": {
+                              "event_id": "2BB"
+                          }
+                      },
+                      "3CC": {
+                          "event": {
+                              "event_id": "3CC"
+                          }
+                      }
+                  }
+                }
+            `))
 		}))
 
 	defer server.Close()
@@ -758,16 +758,16 @@ func TestGetEvent(t *testing.T) {
 			r.ParseForm()
 			assert.Equal(t, "1AA", r.Form.Get("event_id_list"))
 			w.Write([]byte(`
-				{
-				  "events_by_id": {
-					  "1AA": {
-						  "event": {
-							  "event_id": "1AA"
-						  }
-					  }
-				  }
-				}
-			`))
+                {
+                  "events_by_id": {
+                      "1AA": {
+                          "event": {
+                              "event_id": "1AA"
+                          }
+                      }
+                  }
+                }
+            `))
 		}))
 
 	defer server.Close()
@@ -827,23 +827,23 @@ func TestListPerformances(t *testing.T) {
 			assert.Equal(t, "20150403:20150607", r.Form.Get("date_range"))
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
 			w.Write([]byte(`{
-				"results": {
-					"has_perf_names": true,
-					"auto_select": true,
-					"paging_status": {
-						"page_length": 10,
-						"page_number": 2
-					},
-					"performance": [
-						{
-							"perf_id": "ABCD-1"
-						},
-						{
-							"perf_id": "ABCD-2"
-						}
-					]
-				}
-			}`))
+                "results": {
+                    "has_perf_names": true,
+                    "auto_select": true,
+                    "paging_status": {
+                        "page_length": 10,
+                        "page_number": 2
+                    },
+                    "performance": [
+                        {
+                            "perf_id": "ABCD-1"
+                        },
+                        {
+                            "perf_id": "ABCD-2"
+                        }
+                    ]
+                }
+            }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -879,20 +879,20 @@ func TestListPerformancesSingleResult(t *testing.T) {
 			assert.Equal(t, "20150403:20150607", r.Form.Get("date_range"))
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
 			w.Write([]byte(`{
-				"autoselect_this_performance": true,
-				"results": {
-					"has_perf_names": false,
-					"performance": [
-						{
-							"event_id": "ABCD",
-							"has_pool_seats": true,
-							"is_ghost": false,
-							"is_limited": false,
-							"perf_id": "ABCD-1"
-						}
-					]
-				}
-			}`))
+                "autoselect_this_performance": true,
+                "results": {
+                    "has_perf_names": false,
+                    "performance": [
+                        {
+                            "event_id": "ABCD",
+                            "has_pool_seats": true,
+                            "is_ghost": false,
+                            "is_limited": false,
+                            "perf_id": "ABCD-1"
+                        }
+                    ]
+                }
+            }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -923,9 +923,9 @@ func TestListPerformances_error(t *testing.T) {
 			assert.Equal(t, "/f13/performances.v1", r.URL.Path)
 			w.WriteHeader(400)
 			w.Write([]byte(`{
-				"error_code": 8,
-				"error_desc": "Bad data provided"
-			}`))
+                "error_code": 8,
+                "error_desc": "Bad data provided"
+            }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -941,6 +941,116 @@ func TestListPerformances_error(t *testing.T) {
 		assert.Nil(t, user)
 		assert.IsType(t, Error{}, err)
 	}
+}
+
+func TestListPerformanceTimesForMultipleDates(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/times.v1", r.URL.Path)
+			r.ParseForm()
+			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
+			w.Write([]byte(`{ 
+                "results": {
+                    "time": [
+                        {
+                            "iso8601_date_and_time": "2020-01-29T14:30:00Z",
+                            "time_desc": "2.30 PM"
+                        },
+                        {
+                            "iso8601_date_and_time": "2020-01-29T19:00:00Z",
+                            "time_desc": "7.00 PM"
+                        },
+                        {
+                            "iso8601_date_and_time": "2020-01-29T19:30:00Z",
+                            "time_desc": "7.30 PM"
+                        }
+                    ]
+                }
+            }`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ListPerformancesParams{
+		EventID: "ABCD",
+	}
+	results, err := client.ListPerformanceTimes(context.Background(), params)
+	assert.Nil(t, err)
+	assert.Equal(t, len(results.Times), 3)
+	assert.Equal(t, results.Times[0].Datetime.Format(time.RFC3339), "2020-01-29T14:30:00Z")
+	assert.Equal(t, results.Times[0].TimeDesc, "2.30 PM")
+	assert.Equal(t, results.Times[1].Datetime.Format(time.RFC3339), "2020-01-29T19:00:00Z")
+	assert.Equal(t, results.Times[1].TimeDesc, "7.00 PM")
+	assert.Equal(t, results.Times[2].Datetime.Format(time.RFC3339), "2020-01-29T19:30:00Z")
+	assert.Equal(t, results.Times[2].TimeDesc, "7.30 PM")
+}
+
+func TestListPerformanceTimesForSingleDate(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/times.v1", r.URL.Path)
+			r.ParseForm()
+			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
+			w.Write([]byte(`{ 
+                "results": {
+                    "time": [
+                        {
+                            "iso8601_date_and_time": "2020-01-29T14:30:00Z",
+                            "time_desc": "2.30 PM"
+                        }
+                    ]
+                }
+            }`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ListPerformancesParams{
+		EventID: "ABCD",
+	}
+	results, err := client.ListPerformanceTimes(context.Background(), params)
+	assert.Nil(t, err)
+	assert.Equal(t, len(results.Times), 1)
+	assert.Equal(t, results.Times[0].Datetime.Format(time.RFC3339), "2020-01-29T14:30:00Z")
+	assert.Equal(t, results.Times[0].TimeDesc, "2.30 PM")
+}
+
+func TestListPerformanceTimesWithNoDates(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/f13/times.v1", r.URL.Path)
+			r.ParseForm()
+			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
+			w.Write([]byte(`{ 
+                "results": {
+                    "time": []
+                }
+            }`))
+		}))
+	defer server.Close()
+	config := &Config{
+		BaseURL:  server.URL,
+		User:     "bill",
+		Password: "hahaha",
+	}
+
+	client := NewClient(config)
+	params := &ListPerformancesParams{
+		EventID: "ABCD",
+	}
+	results, err := client.ListPerformanceTimes(context.Background(), params)
+	assert.Nil(t, err)
+	assert.Equal(t, len(results.Times), 0)
 }
 
 func TestGetAvailability(t *testing.T) {
