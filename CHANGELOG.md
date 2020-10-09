@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.2] - 2020-10-09
+### Added
+- Added minutes_left_on_reserve to status.v1 response
+
 ## [1.1.1] - 2020-01-29
 ### Added
 - Add support for times.v1 endpoint
