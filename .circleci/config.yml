@@ -6,15 +6,12 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.14.1
     steps:
       - checkout
       - run:
           name: go get
           command: go get -t -d -v ./...
-      - run:
-          name: go get testify
-          command: go get github.com/stretchr/testify/assert
       - run:
           name: coverage
           command: go test -race -coverprofile=coverage.txt -covermode=atomic
