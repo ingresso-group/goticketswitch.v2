@@ -13,6 +13,9 @@ jobs:
           name: go get
           command: go get -t -d -v ./...
       - run:
+          name: go get testify
+          command: go get github.com/stretchr/testify
+      - run:
           name: coverage
           command: go test -race -coverprofile=coverage.txt -covermode=atomic
       - run:
