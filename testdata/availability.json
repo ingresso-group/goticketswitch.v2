@@ -30,7 +30,9 @@
                         "discount_desc" : "Adult",
                         "discount_code" : "ADULT",
                         "sale_surcharge" : 4,
-                        "non_offer_sale_seatprice" : 35
+                        "non_offer_sale_seatprice" : 35,
+                        "min_age": 18,
+                        "max_age": null
                     },
                     {
                         "number_available" : 6,
@@ -44,7 +46,9 @@
                         "non_offer_sale_seatprice" : 18,
                         "absolute_saving" : 0,
                         "discount_code" : "CHILD",
-                        "discount_desc" : "Child rate"
+                        "discount_desc" : "Child rate",
+                        "min_age": null,
+                        "max_age": 17
                     }
                 ]
             }
@@ -62,7 +66,9 @@
             "price_band_code": "B/pool",
             "price_band_description" : "TEST PB2",
             "sale_seatprice": 40,
-            "sale_surcharge": 5
+            "sale_surcharge": 5,
+            "min_age": null,
+            "max_age": null
           }
         ],
         "ticket_type_code": "STALLS",
@@ -83,7 +89,9 @@
             "price_band_code": "A/pool",
             "price_band_description" : "TEST PB3",
             "sale_seatprice": 35,
-            "sale_surcharge": 5
+            "sale_surcharge": 5,
+            "min_age": null,
+            "max_age": null
           },
           {
             "absolute_saving": 0,
@@ -98,7 +106,9 @@
             "price_band_code": "B/pool",
             "price_band_description" : "TEST PB4",
             "sale_seatprice": 30,
-            "sale_surcharge": 5
+            "sale_surcharge": 5,
+            "min_age": null,
+            "max_age": null
           }
         ],
         "ticket_type_code": "CIRCLE",
