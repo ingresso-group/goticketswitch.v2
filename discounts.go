@@ -16,6 +16,8 @@ type Discount struct {
 	PriceBandCode            string          `json:"price_band_code"`
 	Seatprice                decimal.Decimal `json:"sale_seatprice"`
 	Surcharge                decimal.Decimal `json:"sale_surcharge"`
+	MinAge                   int             `json:"min_age"`
+	MaxAge                   int             `json:"max_age"`
 }
 
 // DiscountsHolder is the intermediary discounts holder -- an artefact of the API
