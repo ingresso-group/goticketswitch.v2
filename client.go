@@ -89,7 +89,7 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func (client *Client) setHeaders(r *Request) error {
+func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 	if client.Config.Language != "" {
 		r.Header.Set("Accept-Language", client.Config.Language)
 	}
@@ -104,6 +104,12 @@ func (client *Client) setHeaders(r *Request) error {
 
 		r.Header.Set("Authorization", "Basic "+basicAuth(client.Config.User, client.Config.Password))
 	}
+
+	// Set a session tracking id if provided in context
+	trackingId, ok := GetSessionTrackingID(ctx)
+	if ok {
+		r.Header.Set("x-request-id", trackingId)
+	}
 	return nil
 }
 
@@ -113,7 +119,7 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 	if err != nil {
 		return
 	}
-	err = client.setHeaders(req)
+	err = client.setHeaders(ctx, req)
 	if err != nil {
 		return
 	}
