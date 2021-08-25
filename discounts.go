@@ -8,8 +8,8 @@ type Discount struct {
 	AllowsLeavingSingleSeats string          `json:"allows_leaving_single_seats"`
 	Code                     string          `json:"discount_code"`
 	Description              string          `json:"discount_desc"`
-	MinimumEligibleAge       int          `json:"discount_minimum_eligible_age"`
-	MaximumEligibleAge       int          `json:"discount_maximum_eligible_age"`
+	MinimumEligibleAge       int             `json:"discount_minimum_eligible_age"`
+	MaximumEligibleAge       int             `json:"discount_maximum_eligible_age"`
 	IsOffer                  bool            `json:"is_offer"`
 	NonOfferSeatprice        decimal.Decimal `json:"non_offer_sale_seatprice"`
 	NonOfferSurcharge        decimal.Decimal `json:"non_offer_sale_surcharge"`
