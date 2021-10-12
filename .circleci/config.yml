@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install certs
+          name: reinstall certs package
           command: sudo apt-get update && sudo apt-get install --reinstall ca-certificates  
       - run:
           name: go get
