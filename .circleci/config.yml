@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: install certs
-          command: sudo apt-get update && apt-get install --reinstall ca-certificates  
+          command: sudo apt-get update && sudo apt-get install --reinstall ca-certificates  
       - run:
           name: go get
           command: go get -t -d -v ./...
