@@ -39,6 +39,7 @@ type Order struct {
 	ReserveFailureComment        string             `json:"reserve_failure_comment"`
 	SeatRequestStatus            string             `json:"seat_request_status"`
 	SendMethod                   SendMethod         `json:"send_method"`
+	SupportedBarcodeTypes        []string           `json:"supported_barcode_types"`
 	TicketOrdersHolder           TicketOrdersHolder `json:"ticket_orders"`
 	TicketTypeCode               string             `json:"ticket_type_code"`
 	TicketTypeDesc               string             `json:"ticket_type_desc"`
