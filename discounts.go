@@ -10,6 +10,7 @@ type Discount struct {
 	Description              string          `json:"discount_desc"`
 	MinimumEligibleAge       int             `json:"discount_minimum_eligible_age"`
 	MaximumEligibleAge       int             `json:"discount_maximum_eligible_age"`
+	SemanticType             string          `json:"discount_semantic_type"`
 	IsOffer                  bool            `json:"is_offer"`
 	NonOfferSeatprice        decimal.Decimal `json:"non_offer_sale_seatprice"`
 	NonOfferSurcharge        decimal.Decimal `json:"non_offer_sale_surcharge"`
