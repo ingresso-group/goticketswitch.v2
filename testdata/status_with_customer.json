@@ -1,0 +1,242 @@
+{
+   "language_list" : [
+      "en"
+   ],
+   "customer": {
+      "addr_line_one": "Ingresso group Ltd",
+      "addr_line_one_latin": "Ingresso group Ltd",
+      "addr_line_two": "The Metro Building, 1 Butterwick",
+      "addr_line_two_latin": "The Metro Building, 1 Butterwick",
+      "agent_ref": "1234567",
+      "country": "Royaume-Uni",
+      "country_code": "uk",
+      "country_latin": "Royaume-Uni",
+      "county": "",
+      "county_latin": "",
+      "email_addr": "systems@ingresso.co.uk",
+      "email_address_sha256": "3819bf7a09d136fdd4807c525c4103951d613b9172df964cc2ba6d7689dedcdf",
+      "first_name": "Fred",
+      "first_name_latin": "test",
+      "home_phone": "+41 0203 137 7420",
+      "initials": "",
+      "initials_latin": "",
+      "last_name": "Flinstone",
+      "last_name_latin": "Tester",
+      "last_name_sha256": "9e7cd9cb5a63a3591e16f4d835f32a1c4a84ab66e39ae27aa448c03b66bf63e7",
+      "postcode": "W6 8DL",
+      "postcode_latin": "W6 8DL",
+      "privacy_policy_version": "",
+      "suffix": "",
+      "suffix_latin": "",
+      "supplier_can_use_customer_data": false,
+      "title": "",
+      "title_latin": "",
+      "town": "Hammersmith",
+      "town_latin": "Hammersmith",
+      "user_can_use_customer_data": false,
+      "work_phone": "+41 0203 137 7420",
+      "world_can_use_customer_data": false
+   },
+   "customers_by_system": {
+      "broadway_inbound": {
+         "addr_line_one": "Ingresso group Ltd",
+         "addr_line_one_latin": "Ingresso group Ltd",
+         "addr_line_two": "The Metro Building, 1 Butterwick",
+         "addr_line_two_latin": "The Metro Building, 1 Butterwick",
+         "agent_ref": "1",
+         "country": "Royaume-Uni",
+         "country_code": "uk",
+         "country_latin": "Royaume-Uni",
+         "county": "",
+         "county_latin": "",
+         "email_addr": "systems@ingresso.co.uk",
+         "email_address_sha256": "3819bf7a09d136fdd4807c525c4103951d613b9172df964cc2ba6d7689dedcdf",
+         "first_name": "test",
+         "first_name_latin": "test",
+         "home_phone": "+41 0203 137 7420",
+         "initials": "",
+         "initials_latin": "",
+         "last_name": "Tester",
+         "last_name_latin": "Tester",
+         "last_name_sha256": "9e7cd9cb5a63a3591e16f4d835f32a1c4a84ab66e39ae27aa448c03b66bf63e7",
+         "postcode": "W6 8DL",
+         "postcode_latin": "W6 8DL",
+         "privacy_policy_version": "",
+         "suffix": "",
+         "suffix_latin": "",
+         "supplier_can_use_customer_data": false,
+         "title": "",
+         "title_latin": "",
+         "town": "Hammersmith",
+         "town_latin": "Hammersmith",
+         "user_can_use_customer_data": false,
+         "work_phone": "+41 0203 137 7420",
+         "world_can_use_customer_data": false
+      }
+   },
+   "trolley_contents" : {
+      "trolley_bundle_count" : 1,
+      "purchase_result" : {
+         "is_partial" : false,
+         "success" : true
+      },
+      "trolley_order_count" : 1,
+      "bundle" : [
+         {
+            "purchase_result" : {
+               "agent_cost" : {
+                  "currency_code" : "gbp",
+                  "total_agent_cost" : 99
+               },
+               "is_semi_credit" : false,
+               "success" : true
+            },
+            "bundle_source_desc" : "External Test Backend 1",
+            "bundle_total_surcharge" : 10,
+            "order" : [
+               {
+                  "total_sale_seatprice" : 100,
+                  "total_no_of_seats" : 2,
+                  "ticket_type_code" : "STALLS",
+                  "performance" : {
+                     "running_time" : 90,
+                     "iso8601_date_and_time" : "2019-01-01T15:30:00Z",
+                     "has_pool_seats" : true,
+                     "is_ghost" : false,
+                     "event_id" : "7AB",
+                     "is_limited" : false,
+                     "perf_id" : "7AB-5",
+                     "date_desc" : "Tue, 1st January 2019",
+                     "time_desc" : "3.30 PM"
+                  },
+                  "user_commission" : {
+                     "amount_including_vat" : 10,
+                     "amount_excluding_vat" : 8.33,
+                     "commission_currency_code" : "gbp"
+                  },
+                  "total_sale_surcharge" : 10,
+                  "backend_purchase_reference" : "PURCHASE-3444-0",
+                  "send_method" : {
+                     "can_generate_self_print" : false,
+                     "self_print_voucher_url" : "https://api.ticketswitch.com/tickets/web_self_print.buy/demo?crypto_block=M_--ZX8ljGKbFVq0Mlhy2-nwuDMzU8Be2tuNqUhxNPEjsg-C3jVltWRIiafJSpUbUtvZA2hpMxf08PE9o_BtfRfQunt_xi3SgfYGjyfXz-nRMl_ibsqIxVeOl_--Y",
+                     "send_type" : "selfprint",
+                     "has_html_page" : true,
+                     "send_cost" : 0,
+                     "send_final_type" : "selfprint",
+                     "send_desc" : "Printable eTicket",
+                     "send_code" : "VOUCH"
+                  },
+                  "item_number" : 1,
+                  "ticket_orders" : {
+                     "ticket_order" : [
+                        {
+                           "total_sale_seatprice" : 100,
+                           "discount_code" : "NORMAL",
+                           "total_sale_surcharge" : 10,
+                           "sale_seatprice" : 50,
+                           "no_of_seats" : 2,
+                           "seats" : [
+                              {
+                                 "is_restricted_view" : true,
+                                 "seat_text" : "Restricted View",
+                                 "row_id" : "A",
+                                 "seat_subdata" : "27f237e6b7f96587b6202ff3607ad88a",
+                                 "full_id" : "A1",
+                                 "col_id" : "1",
+                                 "barcode" : "5B0AAC93"
+                              },
+                              {
+                                 "seat_text" : "Restricted View",
+                                 "is_restricted_view" : true,
+                                 "row_id" : "A",
+                                 "seat_subdata" : "c6bdf6f65f3845da9085e9ae5790b494",
+                                 "full_id" : "A2",
+                                 "col_id" : "2",
+                                 "barcode" : "5B0AAC93"
+                              }
+                           ],
+                           "discount_desc" : "Regular Ticket",
+                           "sale_surcharge" : 5
+                        }
+                     ]
+                  },
+                  "seat_request_status" : "got_all",
+                  "price_band_code" : "A/pool",
+                  "gross_commission" : {
+                     "commission_currency_code" : "gbp",
+                     "amount_including_vat" : 15,
+                     "amount_excluding_vat" : 12.5
+                  },
+                  "ticket_type_desc" : "Stalls",
+                  "event" : {
+                     "event_type" : "simple_ticket",
+                     "city_code" : "london-uk",
+                     "show_perf_time" : true,
+                     "has_no_perfs" : false,
+                     "venue_desc" : "Lyric Apollo",
+                     "need_performance" : true,
+                     "classes" : {
+                        "theatre" : "Theatre"
+                     },
+                     "venue_uri_desc" : "Lyric-Apollo",
+                     "event_status" : "live",
+                     "geo_data" : {
+                        "longitude" : -0.22639,
+                        "latitude" : 51.49306
+                     },
+                     "min_running_time" : 90,
+                     "event_id" : "7AB",
+                     "need_departure_date" : false,
+                     "custom_filter" : [],
+                     "is_auto_quantity_add_on" : false,
+                     "country_desc" : "United Kingdom",
+                     "is_add_on" : false,
+                     "is_seated" : true,
+                     "source_desc" : "External Test Backend 1",
+                     "source_code" : "ext_test1",
+                     "need_duration" : false,
+                     "postcode" : "W6 7ES",
+                     "city_desc" : "London",
+                     "country_code" : "uk",
+                     "event_uri_desc" : "TEST-EVENT-The-Unremarkable-Incident-of-the-Cat-at-Lunchtime",
+                     "event_upsell_list" : {
+                        "event_id" : [
+                           "7AA",
+                           "6IF"
+                        ]
+                     },
+                     "event_desc" : "TEST EVENT - The Unremarkable Incident of the Cat at Lunchtime",
+                     "event_path" : "/7AB-test-event-the-unremarkable-incident-of-the-cat-at-lunchtime/",
+                     "max_running_time" : 90
+                  },
+                  "requested_seat_ids" : [
+                     "A1",
+                     "A2"
+                  ]
+               }
+            ],
+            "bundle_total_send_cost" : 0,
+            "bundle_total_cost" : 110,
+            "bundle_total_seatprice" : 100,
+            "bundle_order_count" : 1,
+            "currency_code" : "gbp",
+            "bundle_source_code" : "ext_test1"
+         }
+      ],
+      "transaction_uuid" : "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1",
+      "transaction_id" : "U000-0000-VAWE-LDNX"
+   },
+   "reserve_iso8601_date_and_time" : "2018-05-27T13:03:14Z",
+   "transaction_status" : "purchased",
+   "currency_details" : {
+      "gbp" : {
+         "currency_code" : "gbp",
+         "currency_number" : 826,
+         "currency_post_symbol" : "",
+         "currency_pre_symbol" : "£",
+         "currency_places" : 2,
+         "currency_factor" : 100
+      }
+   },
+   "purchase_iso8601_date_and_time" : "2018-05-27T13:03:15Z"
+}
