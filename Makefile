@@ -10,4 +10,4 @@ test:
 setup:
 	go get -v ./...
 	go get github.com/golang/lint/golint
-	go get github.com/fzipp/gocyclo 
+	go get github.com/fzipp/gocyclo
