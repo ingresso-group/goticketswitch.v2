@@ -7,7 +7,7 @@ import (
 )
 
 // PriceBand describes a subset of available tickets within a ticket type
-// defined by price point. The price of a price band is defined by it's default
+// defined by price point. The price of a price band is defined by its default
 // discount code, this is normally the most expensive discount option available
 type PriceBand struct {
 	Code                     string                `json:"price_band_code"`
@@ -30,8 +30,8 @@ type PriceBand struct {
 	PossibleDiscounts        DiscountsHolder       `json:"possible_discounts"`
 }
 
-// TicketType describes a sub set of available tickets defined by some non
-// price related parameters. Normally for venue based performances this will
+// TicketType describes a sub set of available tickets defined by some
+// non-price related parameters. Normally for venue based performances this will
 // indicate a part of house or area within the venue.
 type TicketType struct {
 	Code       string      `json:"ticket_type_code"`
@@ -39,7 +39,7 @@ type TicketType struct {
 	PriceBands []PriceBand `json:"price_band"`
 }
 
-// Availability holds the details of the availble tickets
+// Availability holds the details of the available tickets
 type Availability struct {
 	TicketTypes []TicketType `json:"ticket_type"`
 }

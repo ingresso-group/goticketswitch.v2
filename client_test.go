@@ -164,6 +164,12 @@ func TestDo_post(t *testing.T) {
 	ctx := SetSessionTrackingID(context.Background(), "postid")
 	resp, err := client.Do(ctx, req)
 
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
+
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
 	}
@@ -198,6 +204,12 @@ func TestDo_get(t *testing.T) {
 	ctx := SetSessionTrackingID(context.Background(), "foobar123")
 	resp, err := client.Do(ctx, req)
 
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
+
 	if assert.Nil(t, err) {
 		assert.Equal(t, 200, resp.StatusCode)
 	}
@@ -213,7 +225,13 @@ func TestDo_with_bad_base_url(t *testing.T) {
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
 
-	_, err := client.Do(context.Background(), req)
+	resp, err := client.Do(context.Background(), req)
+
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	assert.NotNil(t, err)
 }
@@ -234,7 +252,12 @@ func TestDo_with_header_issues(t *testing.T) {
 	client := NewClient(config)
 	req := NewRequest("GET", "events.v1", nil)
 
-	_, err := client.Do(context.Background(), req)
+	resp, err := client.Do(context.Background(), req)
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	assert.NotNil(t, err)
 }
@@ -253,10 +276,15 @@ func TestDo_post_with_unmarshalable_body(t *testing.T) {
 	}
 
 	client := NewClient(config)
-	// func cannot be marshalled
+	// func cannot be marshaled
 	req := NewRequest("POST", "events.v1", func() { t.Fatal("this should not run") })
 
-	_, err := client.Do(context.Background(), req)
+	resp, err := client.Do(context.Background(), req)
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	assert.NotNil(t, err)
 }
@@ -278,7 +306,12 @@ func TestDo_unrequestable_request(t *testing.T) {
 	// unicode in the method is a nono
 	req := NewRequest("£££££", "events.v1", nil)
 
-	_, err := client.Do(context.Background(), req)
+	resp, err := client.Do(context.Background(), req)
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	assert.NotNil(t, err)
 }
@@ -295,7 +328,12 @@ func TestDo_error_when_doing(t *testing.T) {
 	client := NewClient(config)
 	req := NewRequest("POST", "events.v1", nil)
 
-	_, err := client.Do(context.Background(), req)
+	resp, err := client.Do(context.Background(), req)
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	assert.NotNil(t, err)
 }
@@ -522,7 +560,6 @@ func TestUniversalParams_Universal(t *testing.T) {
 	values = params.Universal()
 	assert.Equal(t, "bar", values["foo"])
 	assert.Equal(t, "beans", values["lol"])
-
 }
 
 func TestPaginationParams_Pagination(t *testing.T) {
@@ -602,7 +639,6 @@ func TestListEventParams_Params(t *testing.T) {
 	params.TrackingID = "abc123"
 	values = params.Params()
 	assert.Equal(t, "abc123", values["custom_tracking_id"])
-
 }
 
 func TestListEvents(t *testing.T) {
@@ -817,7 +853,6 @@ func TestListPerformancesParams_Params(t *testing.T) {
 	params.TrackingID = "abc123"
 	values = params.Params()
 	assert.Equal(t, "abc123", values["custom_tracking_id"])
-
 }
 
 func TestListPerformances(t *testing.T) {
@@ -1517,11 +1552,11 @@ func TestMakePurchase_success(t *testing.T) {
 			assert.Equal(t, http.MethodPost, r.Method)
 			var inputs map[string]interface{}
 			decoder := json.NewDecoder(r.Body)
-			if err := decoder.Decode(&inputs); err != nil {
-				t.Fatal(err)
+			if err2 := decoder.Decode(&inputs); err != nil {
+				t.Fatal(err2)
 			}
 			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
-			_, _ = w.Write([]byte(data))
+			_, _ = w.Write(data)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1576,7 +1611,6 @@ func TestMakePurchase_success(t *testing.T) {
 		}, result.Languages)
 		assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", result.Trolley.TransactionUUID)
 	}
-
 }
 
 func TestGetStatus(t *testing.T) {
@@ -1589,7 +1623,7 @@ func TestGetStatus(t *testing.T) {
 			assert.Equal(t, "/f13/status.v1", r.URL.Path)
 			assert.Equal(t, http.MethodGet, r.Method)
 			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", r.URL.Query().Get("transaction_uuid"))
-			_, _ = w.Write([]byte(data))
+			_, _ = w.Write(data)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1640,7 +1674,7 @@ func TestCancel(t *testing.T) {
 			assert.Equal(t, "/f13/cancel.v1", r.URL.Path)
 			assert.Equal(t, http.MethodPost, r.Method)
 			assert.Equal(t, transUUID, r.URL.Query().Get("transaction_uuid"))
-			_, _ = w.Write([]byte(data))
+			_, _ = w.Write(data)
 		}))
 	defer happyServer.Close()
 	jsonErrorServer := httptest.NewServer(http.HandlerFunc(
@@ -1712,11 +1746,12 @@ func TestCancel(t *testing.T) {
 				assert.False(t, result.Trolley.PurchaseResult.IsPartial)
 				assert.Equal(t, len(result.Trolley.Bundles), 1)
 				assert.Equal(t, len(result.Trolley.Bundles[0].Orders), 1)
+
+				// nolint:misspell
 				assert.Equal(t, result.Trolley.Bundles[0].Orders[0].CancellationStatus, "cancelled")
 			}
 		})
 	}
-
 }
 
 func TestCancelItemsList_String(t *testing.T) {

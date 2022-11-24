@@ -10,7 +10,7 @@ type Currency struct {
 	PreSymbol string `json:"currency_pre_symbol"`
 	// a symbol to place after the digits of a price.
 	PostSymbol string `json:"currency_post_symbol"`
-	// arbitary scale factor, can be used to roughly convert from one currency
+	// arbitrary scale factor, can be used to roughly convert from one currency
 	// to another.
 	Factor int `json:"currency_factor"`
 	//  internal identifier.

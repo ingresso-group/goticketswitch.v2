@@ -6,10 +6,10 @@ import (
 
 // PerformanceTime describes a possible date and time of a Performance.
 type PerformanceTime struct {
-	// the localised date and time for the performance.
+	// the localized date and time for the performance.
 	Datetime time.Time `json:"iso8601_date_and_time,omitempty"`
 
-	// Human readable description of performance time.
+	// Human-readable description of performance time.
 	TimeDesc string `json:"time_desc,omitempty"`
 }
 

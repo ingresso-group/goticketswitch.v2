@@ -2,6 +2,7 @@ package ticketswitch
 
 // CancellationResult contains the results of the cancel API call.
 type CancellationResult struct {
+	//nolint:misspell
 	CancelledItemNumbers []int               `json:"cancelled_item_numbers"`
 	MustAlsoCancel       []Order             `json:"must_also_cancel"`
 	Trolley              Trolley             `json:"trolley_contents"`
@@ -17,8 +18,9 @@ func (result *CancellationResult) IsFullyCancelled() bool {
 		return false
 	}
 	for _, bundle := range result.Trolley.Bundles {
-		for _, order := range bundle.Orders {
-			if order.CancellationStatus != "cancelled" {
+		for i := 0; i < len(bundle.Orders); i++ {
+			//nolint:misspell
+			if bundle.Orders[i].CancellationStatus != "cancelled" {
 				return false
 			}
 		}

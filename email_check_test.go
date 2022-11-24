@@ -11,10 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type mockHTTPClient struct {
-	http.Client
-}
-
 func TestVerifyingEmail(t *testing.T) {
 	table := []struct {
 		name               string

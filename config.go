@@ -11,7 +11,7 @@ type Config struct {
 }
 
 // NewConfig returns a pointer to a newly created Config.
-func NewConfig(user string, password string) *Config {
+func NewConfig(user, password string) *Config {
 	return &Config{
 		BaseURL:  "https://api.ticketswitch.com",
 		User:     user,
