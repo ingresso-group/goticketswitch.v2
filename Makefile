@@ -6,6 +6,7 @@ GOOS=linux
 setup:
 	go install github.com/kyoh86/richgo@latest
 	go install github.com/jstemmer/go-junit-report@latest
+	go install golang.org/x/tools/cmd/goimports@latest
 
 .PHONY: fmt
 fmt:
