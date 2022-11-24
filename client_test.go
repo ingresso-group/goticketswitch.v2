@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -140,7 +141,7 @@ func TestDo_post(t *testing.T) {
 			assert.Equal(t, "Basic ZnJlZF9mbGludHN0b25lOnlhYmFkYWJhZG9v", r.Header.Get("Authorization"))
 			assert.Equal(t, "postid", r.Header.Get("x-request-id"))
 			assert.Equal(t, "37", r.Header.Get("Content-Length"))
-			body, err := ioutil.ReadAll(r.Body)
+			body, err := io.ReadAll(r.Body)
 			if assert.Nil(t, err) {
 				expected := `{
   "foo": "bar",
@@ -178,7 +179,7 @@ func TestDo_get(t *testing.T) {
 
 			assert.Equal(t, "", r.Header.Get("Content-Type"))
 			assert.Equal(t, "", r.Header.Get("Content-Length"))
-			body, err := ioutil.ReadAll(r.Body)
+			body, err := io.ReadAll(r.Body)
 			if assert.Nil(t, err) {
 				assert.Equal(t, "", string(body))
 			}
@@ -303,10 +304,10 @@ func TestTest(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/test.v1", r.URL.Path)
-			w.Write([]byte(`{
-                "user_id": "bill",
-                "real_name": "fred"
-            }`))
+			_, _ = w.Write([]byte(`{
+                            "user_id": "bill",
+                            "real_name": "fred"
+                        }`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -329,7 +330,7 @@ func TestTest_error(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/test.v1", r.URL.Path)
 			w.WriteHeader(401)
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "error_code": 3,
                 "error_desc": "User authentication failure"
             }`))
@@ -371,7 +372,7 @@ func TestTest_request_read_error(t *testing.T) {
 			// actually sending before closing the connection will trigger an
 			// error when the request body is read
 			w.Header().Set("Content-Length", "100")
-			w.Write([]byte("foo"))
+			_, _ = w.Write([]byte("foo"))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -392,7 +393,7 @@ func TestTest_request_bad_user_json(t *testing.T) {
 			w.WriteHeader(200)
 			// the User struct expects the IsB2B flag to be a boolean and this
 			// string should not unmarshal into it
-			w.Write([]byte(`{"is_b2b": "HAHAHAHAH"}`))
+			_, _ = w.Write([]byte(`{"is_b2b": "HAHAHAHAH"}`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -608,9 +609,9 @@ func TestListEvents(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/events.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "foo,bar,lol", r.Form.Get("keywords"))
-			w.Write([]byte(`
+			_, _ = w.Write([]byte(`
                 {
                   "currency_details": {
                     "gbp": {
@@ -681,7 +682,7 @@ func TestListEvents_read_error(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			// Write less bytes then we said we were going to
 			w.Header().Set("Content-Length", "100")
-			w.Write([]byte("foo"))
+			_, _ = w.Write([]byte("foo"))
 		}))
 
 	defer server.Close()
@@ -701,9 +702,9 @@ func TestGetEvents(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/events_by_id.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "1AA,2BB,3CC", r.Form.Get("event_id_list"))
-			w.Write([]byte(`
+			_, _ = w.Write([]byte(`
                 {
                   "events_by_id": {
                       "1AA": {
@@ -755,9 +756,9 @@ func TestGetEvent(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/events_by_id.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "1AA", r.Form.Get("event_id_list"))
-			w.Write([]byte(`
+			_, _ = w.Write([]byte(`
                 {
                   "events_by_id": {
                       "1AA": {
@@ -823,10 +824,10 @@ func TestListPerformances(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/performances.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "20150403:20150607", r.Form.Get("date_range"))
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "results": {
                     "has_perf_names": true,
                     "auto_select": true,
@@ -875,10 +876,10 @@ func TestListPerformancesSingleResult(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/performances.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "20150403:20150607", r.Form.Get("date_range"))
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "autoselect_this_performance": true,
                 "results": {
                     "has_perf_names": false,
@@ -922,7 +923,7 @@ func TestListPerformances_error(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/performances.v1", r.URL.Path)
 			w.WriteHeader(400)
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "error_code": 8,
                 "error_desc": "Bad data provided"
             }`))
@@ -947,9 +948,9 @@ func TestListPerformanceTimesForMultipleDates(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "results": {
                     "time": [
                         {
@@ -994,9 +995,9 @@ func TestListPerformanceTimesForSingleDate(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "results": {
                     "time": [
                         {
@@ -1029,9 +1030,9 @@ func TestListPerformanceTimesWithNoDates(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/times.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			assert.Equal(t, "ABCD", r.Form.Get("event_id"))
-			w.Write([]byte(`{
+			_, _ = w.Write([]byte(`{
                 "results": {
                     "time": []
                 }
@@ -1054,15 +1055,15 @@ func TestListPerformanceTimesWithNoDates(t *testing.T) {
 }
 
 func TestGetAvailability(t *testing.T) {
-	availabilityJSON, err := ioutil.ReadFile("testdata/availability.json")
+	availabilityJSON, err := os.ReadFile("testdata/availability.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/availability.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/availability.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(availabilityJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(availabilityJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1092,15 +1093,15 @@ func TestGetAvailability(t *testing.T) {
 }
 
 func TestGetDiscounts(t *testing.T) {
-	discountsJSON, err := ioutil.ReadFile("testdata/discounts.json")
+	discountsJSON, err := os.ReadFile("testdata/discounts.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/discounts.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/discounts.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(discountsJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(discountsJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1136,15 +1137,15 @@ func TestGetDiscounts(t *testing.T) {
 }
 
 func TestGetSources(t *testing.T) {
-	sourcesJSON, err := ioutil.ReadFile("testdata/sources.json")
+	sourcesJSON, err := os.ReadFile("testdata/sources.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/sources.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/sources.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(sourcesJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(sourcesJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1169,15 +1170,15 @@ func TestGetSources(t *testing.T) {
 }
 
 func TestGetSourcesWithReqSrcInfo(t *testing.T) {
-	sourcesJSON, err := ioutil.ReadFile("testdata/sources_req_src_info.json")
+	sourcesJSON, err := os.ReadFile("testdata/sources_req_src_info.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/sources_req_src_info.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/sources.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(sourcesJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(sourcesJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1228,9 +1229,9 @@ func TestGetSourcesError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/sources.v1", r.URL.Path)
-			r.ParseForm()
+			_ = r.ParseForm()
 			w.WriteHeader(400)
-			w.Write(errorResponse)
+			_, _ = w.Write(errorResponse)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1251,7 +1252,7 @@ func TestGetSourcesError(t *testing.T) {
 }
 
 func TestGetSendMethods(t *testing.T) {
-	sourcesJSON, err := ioutil.ReadFile("testdata/send_methods.json")
+	sourcesJSON, err := os.ReadFile("testdata/send_methods.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/send_methods.json")
 	}
@@ -1260,8 +1261,8 @@ func TestGetSendMethods(t *testing.T) {
 			assert.Equal(t, "/f13/send_methods.v1", r.URL.Path)
 			assert.Equal(t, http.MethodGet, r.Method)
 			assert.Equal(t, "6IF-C30", r.URL.Query().Get("perf_id"))
-			r.ParseForm()
-			w.Write(sourcesJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(sourcesJSON)
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1292,15 +1293,15 @@ func TestGetSendMethods(t *testing.T) {
 }
 
 func TestMakeReservation(t *testing.T) {
-	reservationJSON, err := ioutil.ReadFile("testdata/reservation.json")
+	reservationJSON, err := os.ReadFile("testdata/reservation.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/reservation.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/reserve.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(reservationJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(reservationJSON)
 		}))
 	defer server.Close()
 
@@ -1346,15 +1347,15 @@ func TestMakeReservation(t *testing.T) {
 }
 
 func TestMakeReservationFailure(t *testing.T) {
-	reservationJSON, err := ioutil.ReadFile("testdata/reservation_failure.json")
+	reservationJSON, err := os.ReadFile("testdata/reservation_failure.json")
 	if err != nil {
 		t.Fatalf("Cannot find testdata/reservation_failure.json")
 	}
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/f13/reserve.v1", r.URL.Path)
-			r.ParseForm()
-			w.Write(reservationJSON)
+			_ = r.ParseForm()
+			_, _ = w.Write(reservationJSON)
 		}))
 	defer server.Close()
 
@@ -1422,7 +1423,7 @@ func TestReleaseReservation_success(t *testing.T) {
 				t.Fatal(err)
 			}
 			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
-			w.Write([]byte(`{"released_ok": true}`))
+			_, _ = w.Write([]byte(`{"released_ok": true}`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1444,7 +1445,7 @@ func TestReleaseReservation_success(t *testing.T) {
 func TestReleaseReservation_failed(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte(`{"released_ok": false}`))
+			_, _ = w.Write([]byte(`{"released_ok": false}`))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1506,7 +1507,7 @@ func TestMakePurchaseParams_with_payment_method(t *testing.T) {
 }
 
 func TestMakePurchase_success(t *testing.T) {
-	data, err := ioutil.ReadFile("testdata/purchase-credit-success.json")
+	data, err := os.ReadFile("testdata/purchase-credit-success.json")
 	if err != nil {
 		t.Fatalf("testdata/purchase-credit-success.json")
 	}
@@ -1520,7 +1521,7 @@ func TestMakePurchase_success(t *testing.T) {
 				t.Fatal(err)
 			}
 			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", inputs["transaction_uuid"])
-			w.Write([]byte(data))
+			_, _ = w.Write([]byte(data))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1539,7 +1540,7 @@ func TestMakePurchase_success(t *testing.T) {
 		assert.Nil(t, result.Callout)
 		assert.Nil(t, result.PendingCallout)
 		assert.Equal(t, map[string]Currency{
-			"gbp": Currency{
+			"gbp": {
 				Code:       "gbp",
 				Places:     2,
 				Factor:     100,
@@ -1579,7 +1580,7 @@ func TestMakePurchase_success(t *testing.T) {
 }
 
 func TestGetStatus(t *testing.T) {
-	data, err := ioutil.ReadFile("testdata/status.json")
+	data, err := os.ReadFile("testdata/status.json")
 	if err != nil {
 		t.Fatalf("testdata/status.json")
 	}
@@ -1588,7 +1589,7 @@ func TestGetStatus(t *testing.T) {
 			assert.Equal(t, "/f13/status.v1", r.URL.Path)
 			assert.Equal(t, http.MethodGet, r.Method)
 			assert.Equal(t, "4df498e9-2daa-4393-a6bb-cc3dfefa7cc1", r.URL.Query().Get("transaction_uuid"))
-			w.Write([]byte(data))
+			_, _ = w.Write([]byte(data))
 		}))
 	defer server.Close()
 	config := &Config{
@@ -1605,7 +1606,7 @@ func TestGetStatus(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, "purchased", result.Status)
 		assert.Equal(t, map[string]Currency{
-			"gbp": Currency{
+			"gbp": {
 				Code:       "gbp",
 				Places:     2,
 				Factor:     100,
@@ -1629,7 +1630,7 @@ func TestGetStatus(t *testing.T) {
 }
 
 func TestCancel(t *testing.T) {
-	data, err := ioutil.ReadFile("testdata/cancel.json")
+	data, err := os.ReadFile("testdata/cancel.json")
 	if !assert.Nil(t, err) {
 		t.Fatal(err)
 	}
@@ -1639,12 +1640,12 @@ func TestCancel(t *testing.T) {
 			assert.Equal(t, "/f13/cancel.v1", r.URL.Path)
 			assert.Equal(t, http.MethodPost, r.Method)
 			assert.Equal(t, transUUID, r.URL.Query().Get("transaction_uuid"))
-			w.Write([]byte(data))
+			_, _ = w.Write([]byte(data))
 		}))
 	defer happyServer.Close()
 	jsonErrorServer := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("not real json"))
+			_, _ = w.Write([]byte("not real json"))
 		}))
 	defer jsonErrorServer.Close()
 	table := []struct {
@@ -1697,7 +1698,7 @@ func TestCancel(t *testing.T) {
 					t.Fatal(err)
 				}
 				assert.Equal(t, map[string]Currency{
-					"gbp": Currency{
+					"gbp": {
 						Code:       "gbp",
 						Places:     2,
 						Factor:     100,

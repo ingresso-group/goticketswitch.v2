@@ -1,23 +1,27 @@
-# Python CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-python/ for more details
-#
 version: 2
 jobs:
   test:
     docker:
-      - image: cimg/go:1.14.1
+      - image: cimg/go:1.19
+        environment:
+          GOFLAGS: -p=8
     steps:
       - checkout
       - run:
-          name: reinstall certs package
-          command: sudo apt-get update && sudo apt-get install --reinstall ca-certificates  
+          name: Avoid hosts unknown for github
+          command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
       - run:
-          name: go get
-          command: go get -t -d -v ./...
+          name: Fetch golangci-lint
+          command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.49.0
       - run:
-          name: coverage
-          command: go test -race -coverprofile=coverage.txt -covermode=atomic
+          name: Install dependencies
+          command: |
+            make setup
+            go get ./...
+      - run:
+          name: lint
+          command: make lint
+      - run: make test
       - run:
           name: Report code coverage
           command: bash <(curl -s https://codecov.io/bash) -t "172993e7-77a9-4aad-a9ef-6319b1a2d51d" || echo "Coverage not reported"

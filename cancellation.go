@@ -9,8 +9,8 @@ type CancellationResult struct {
 }
 
 // IsFullyCancelled checks the CancellationResult to see if the cancellation
-// successfully cancelled all orders within the Trolley. If some orders are
-// cancelled and others aren't then this will return false.
+// successfully canceled all orders within the Trolley. If some orders are
+// canceled and others aren't then this will return false.
 func (result *CancellationResult) IsFullyCancelled() bool {
 	// Check if the trolley is empty
 	if len(result.Trolley.Bundles) == 0 {
