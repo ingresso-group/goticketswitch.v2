@@ -10,5 +10,6 @@ type StatusResult struct {
 	ReserveDatetime      time.Time           `json:"reserve_iso8601_date_and_time"`
 	PurchaseDatetime     time.Time           `json:"purchase_iso8601_date_and_time"`
 	CurrencyDetails      map[string]Currency `json:"currency_details"`
+	Customer             Customer            `json:"customer"`
 	Status               string              `json:"transaction_status"`
 }

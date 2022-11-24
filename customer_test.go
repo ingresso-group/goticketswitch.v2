@@ -8,6 +8,7 @@ import (
 
 func TestCustomer_Params(t *testing.T) {
 	customer := Customer{
+		AgentReference:             "1234567",
 		FirstName:                  "Fred",
 		LastName:                   "Flintstone",
 		CountryCode:                "us",
@@ -29,6 +30,7 @@ func TestCustomer_Params(t *testing.T) {
 	}
 
 	params := customer.Params()
+	assert.Equal(t, "1234567", params["agent_ref"])
 	assert.Equal(t, "Fred", params["first_name"])
 	assert.Equal(t, "Flintstone", params["last_name"])
 	assert.Equal(t, "us", params["country_code"])

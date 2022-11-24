@@ -179,6 +179,7 @@ func (client *Client) Test(ctx context.Context) (*User, error) {
 
 // UniversalParams are parameters that can be passed to any call
 type UniversalParams struct {
+	AddCustomer                  bool
 	Availability                 bool
 	AvailabilityWithPerformances bool
 	ExtraInfo                    bool
@@ -256,6 +257,9 @@ func (params *UniversalParams) Universal() map[string]string {
 	}
 	if params.TrackingID != "" {
 		v["custom_tracking_id"] = params.TrackingID
+	}
+	if params.AddCustomer {
+		v["add_customer"] = "1"
 	}
 
 	for k, val := range params.Misc {
@@ -762,6 +766,7 @@ func (client *Client) MakePurchase(ctx context.Context, params *MakePurchasePara
 	return &result, nil
 }
 
+// nolint:dupl
 // GetStatus retrieves the transaction from the API
 func (client *Client) GetStatus(ctx context.Context, params *TransactionParams) (*StatusResult, error) {
 	req := NewRequest(http.MethodGet, "status.v1", nil)
@@ -815,6 +820,7 @@ func (params *CancellationParams) Params() map[string]string {
 	return values
 }
 
+// nolint:dupl
 // Cancel cancels transactions via the API
 func (client *Client) Cancel(ctx context.Context, params *CancellationParams) (*CancellationResult, error) {
 	req := NewRequest(http.MethodPost, "cancel.v1", nil)
@@ -825,11 +831,7 @@ func (client *Client) Cancel(ctx context.Context, params *CancellationParams) (*
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		if resp != nil {
-			_ = resp.Body.Close()
-		}
-	}()
+	defer resp.Body.Close()
 
 	var result CancellationResult
 	decoder := json.NewDecoder(resp.Body)

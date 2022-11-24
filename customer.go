@@ -2,6 +2,7 @@ package ticketswitch
 
 // Customer contains information about the customer that bought tickets
 type Customer struct {
+	AgentReference             string `json:"agent_ref"`
 	FirstName                  string `json:"first_name"`
 	LastName                   string `json:"last_name"`
 	CountryCode                string `json:"country_code"`
@@ -25,6 +26,7 @@ type Customer struct {
 // Params returns the customer data as a map
 func (customer *Customer) Params() map[string]string {
 	values := map[string]string{
+		"agent_ref":                      customer.AgentReference,
 		"first_name":                     customer.FirstName,
 		"last_name":                      customer.LastName,
 		"country_code":                   customer.CountryCode,
