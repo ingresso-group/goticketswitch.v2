@@ -18,7 +18,6 @@ func TestCircle(t *testing.T) {
 	assert.Equal(t, 12.345, area.Lat())
 	assert.Equal(t, 67.890, area.Lng())
 	assert.Equal(t, 987.65, area.Radius)
-
 }
 
 func TestCircle_Valid(t *testing.T) {

@@ -2,17 +2,14 @@ package ticketswitch
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-    "errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-)
 
-type mockHTTPClient struct {
-	http.Client
-}
+	"github.com/stretchr/testify/assert"
+)
 
 func TestVerifyingEmail(t *testing.T) {
 	table := []struct {
@@ -46,7 +43,7 @@ func TestVerifyingEmail(t *testing.T) {
 			email:              "",
 			returnedStatusCode: 460,
 			returnedResponse:   `{}`,
-			expectedResult: errors.New("No email was provided for verification"),
+			expectedResult:     errors.New("No email was provided for verification"),
 		},
 		{
 			name:               "Unhandled exception",
@@ -72,7 +69,7 @@ func TestVerifyingEmail(t *testing.T) {
 				fmt.Fprintln(w, test.returnedResponse)
 			}
 		}))
-        defer ts.Close()
+		defer ts.Close()
 		cfg := &Config{
 			BaseURL:  ts.URL,
 			User:     "test",

@@ -16,5 +16,4 @@ func (params *EmailCheckParams) Params() map[string]string {
 	values["email_address"] = params.EmailAddress
 
 	return values
-
 }

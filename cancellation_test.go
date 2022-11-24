@@ -2,7 +2,7 @@ package ticketswitch
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,7 +33,7 @@ func TestCancellationResult_IsFullyCancelled(t *testing.T) {
 
 	for _, test := range table {
 		t.Run(test.name, func(t *testing.T) {
-			testdata, err := ioutil.ReadFile(test.testdata)
+			testdata, err := os.ReadFile(test.testdata)
 			if !assert.Nil(t, err) {
 				t.Fatal(err)
 			}

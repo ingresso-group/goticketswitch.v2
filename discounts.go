@@ -23,7 +23,7 @@ type Discount struct {
 	Combined                 decimal.Decimal `json:"sale_combined"`
 }
 
-// DiscountsHolder is the intermediary discounts holder -- an artefact of the API
+// DiscountsHolder is the intermediary discounts' holder -- an artifact of the API
 type DiscountsHolder struct {
 	Discounts []Discount `json:"discount"`
 }

@@ -37,6 +37,10 @@ const (
 	SortLastSale = "last_sale"
 )
 
+type FunctionParams interface {
+	Params() map[string]string
+}
+
 // Client wraps the ticketswitch f13 API.
 type Client struct {
 	Config     *Config
@@ -113,22 +117,22 @@ func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 	return nil
 }
 
-// Do makes a request to the API
+// Do make a request to the API
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
 	u, err := client.getURL(req)
 	if err != nil {
-		return
+		return nil, err
 	}
 	err = client.setHeaders(ctx, req)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	var body io.Reader
 	if req.Body != nil {
-		data, err := marshal(req.Body)
-		if err != nil {
-			return nil, err
+		data, err2 := marshal(req.Body)
+		if err2 != nil {
+			return nil, err2
 		}
 		body = bytes.NewBuffer(data)
 		req.Header.Set("Content-Type", "application/json")
@@ -136,19 +140,22 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 
 	r, err := http.NewRequest(req.Method, u.String(), body)
 	if err != nil {
-		return
+		return nil, err
 	}
 	r.Header = req.Header
 	r = r.WithContext(ctx)
 
 	resp, err = client.HTTPClient.Do(r)
 	if err != nil {
-		return
+		return nil, err
 	}
+
 	if resp.StatusCode != 200 {
 		err = checkForError(resp)
+		return resp, err
 	}
-	return
+
+	return resp, nil
 }
 
 // Test tests the API connection returning a User on success
@@ -331,7 +338,6 @@ func (params *ListEventsParams) Params() map[string]string {
 	}
 
 	return values
-
 }
 
 // ListEvents returns a paginated slice of Events from the API.
@@ -473,6 +479,8 @@ func (params *ListPerformancesParams) Params() map[string]string {
 }
 
 // ListPerformances fetches a slice of performances from the API
+//
+//nolint:dupl
 func (client *Client) ListPerformances(ctx context.Context, params *ListPerformancesParams) (*ListPerformancesResults, error) {
 	req := NewRequest(http.MethodGet, "performances.v1", nil)
 	if params != nil {
@@ -496,6 +504,8 @@ func (client *Client) ListPerformances(ctx context.Context, params *ListPerforma
 }
 
 // ListPerformanceTimes fetches a slice of unique performance times from the API
+//
+//nolint:dupl
 func (client *Client) ListPerformanceTimes(ctx context.Context, params *ListPerformancesParams) (*ListPerformanceTimesResults, error) {
 	req := NewRequest(http.MethodGet, "times.v1", nil)
 	if params != nil {
@@ -518,6 +528,8 @@ func (client *Client) ListPerformanceTimes(ctx context.Context, params *ListPerf
 }
 
 // GetAvailability fetches availability for a performce from the API
+//
+//nolint:dupl
 func (client *Client) GetAvailability(ctx context.Context, perf string, params *GetAvailabilityParams) (*AvailabilityResult, error) {
 	req := NewRequest(http.MethodGet, "availability.v1", nil)
 	if params != nil {
@@ -542,7 +554,7 @@ func (client *Client) GetAvailability(ctx context.Context, perf string, params *
 }
 
 // GetDiscounts fetches the Discounts for a particular performance, ticket type and price band from the API
-func (client *Client) GetDiscounts(ctx context.Context, perf string, ticketTypeCode string, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
+func (client *Client) GetDiscounts(ctx context.Context, perf, ticketTypeCode, priceBandCode string, params *UniversalParams) (*DiscountsResult, error) {
 	req := NewRequest(http.MethodGet, "discounts.v1", nil)
 	if params != nil {
 		req.SetValues(params.Universal())
@@ -593,6 +605,7 @@ func (client *Client) GetSources(ctx context.Context, params *UniversalParams) (
 	return sourcesResult, nil
 }
 
+// nolint:dupl
 // GetSendMethods fetches the available send methods for a performance from the
 // API
 func (client *Client) GetSendMethods(ctx context.Context, perf string, params *UniversalParams) (*SendMethodsResults, error) {
@@ -655,7 +668,6 @@ func (params *TransactionParams) Params() map[string]string {
 		values[k] = v
 	}
 	return values
-
 }
 
 // ReleaseReservation makes a best effort attempt to release any reservations
@@ -671,7 +683,7 @@ func (client *Client) ReleaseReservation(ctx context.Context, params *Transactio
 
 	var result map[string]bool
 	decoder := json.NewDecoder(resp.Body)
-	if err = decoder.Decode(&result); err != nil {
+	if err := decoder.Decode(&result); err != nil {
 		return false, err
 	}
 
@@ -787,7 +799,6 @@ func (items CancelItemsList) String() string {
 		stringArray[idx] = fmt.Sprint(val)
 	}
 	return strings.Join(stringArray, ",")
-
 }
 
 func (params *CancellationParams) Params() map[string]string {
@@ -795,7 +806,7 @@ func (params *CancellationParams) Params() map[string]string {
 		"transaction_uuid": params.TransactionUUID,
 	}
 	if len(params.CancelItemsList) > 0 {
-		values["cancel_items_list"] = fmt.Sprint(params.CancelItemsList)
+		values["cancel_items_list"] = params.CancelItemsList.String()
 	}
 
 	for k, v := range params.Universal() {
@@ -814,7 +825,11 @@ func (client *Client) Cancel(ctx context.Context, params *CancellationParams) (*
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
 
 	var result CancellationResult
 	decoder := json.NewDecoder(resp.Body)
@@ -834,6 +849,14 @@ func (client *Client) EmailCheck(ctx context.Context, params *EmailCheckParams) 
 	}
 	req := NewRequest(http.MethodGet, "email_check.v1", nil)
 	req.SetValues(params.Params())
-	_, err := client.Do(ctx, req)
+
+	resp, err := client.Do(ctx, req)
+
+	defer func() {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+	}()
+
 	return err
 }

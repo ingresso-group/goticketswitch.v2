@@ -24,8 +24,11 @@ func TestCheckForError(t *testing.T) {
 	"desc": "some cool stuff"
 }`)
 	responseWriter := httptest.NewRecorder()
-	responseWriter.Write(data)
+	_, _ = responseWriter.Write(data)
 	response := responseWriter.Result()
+
+	defer response.Body.Close()
+
 	err := checkForError(response)
 	assert.Nil(t, err)
 
@@ -34,8 +37,11 @@ func TestCheckForError(t *testing.T) {
 	"error_desc": "hampster dead"
 }`)
 	responseWriter = httptest.NewRecorder()
-	responseWriter.Write(data)
+	_, _ = responseWriter.Write(data)
 	response = responseWriter.Result()
+
+	defer response.Body.Close()
+
 	err = checkForError(response)
 	assert.NotNil(t, err)
 	ticketswitchErr, ok := err.(Error)
@@ -51,8 +57,12 @@ func TestCheckForError_AuthenticationError(t *testing.T) {
 	"error_code": 3,
 	"error_desc": "Authentication Error"}`)
 	responseWriter := httptest.NewRecorder()
-	responseWriter.Write(data)
+	_, _ = responseWriter.Write(data)
+
 	response := responseWriter.Result()
+
+	defer response.Body.Close()
+
 	err := checkForError(response)
 
 	assert.NotNil(t, err)
@@ -69,8 +79,11 @@ func TestCheckForError_CallbackGoneError(t *testing.T) {
 	"error_desc": "Callback Gone Error"}`)
 	responseWriter := httptest.NewRecorder()
 	responseWriter.WriteHeader(http.StatusGone)
-	responseWriter.Write(data)
+	_, _ = responseWriter.Write(data)
 	response := responseWriter.Result()
+
+	defer response.Body.Close()
+
 	err := checkForError(response)
 
 	assert.NotNil(t, err)
