@@ -18,15 +18,15 @@ type Event struct {
 	ID string `json:"event_id"`
 	// status of the event.
 	Status string `json:"event_status"`
-	// human readable name for the event.
+	// human-readable name for the event.
 	Description string `json:"event_desc"`
-	// the backend system from wich the event originates.
+	// the backend system from which the event originates.
 	Source string `json:"source_desc"`
 	// the internal code for the backend system.
 	SourceCode string `json:"source_code"`
 	// the type of the event.
 	EventType string `json:"event_type"`
-	// a human readable description of the venue.
+	// a human-readable description of the venue.
 	Venue string `json:"venue_desc"`
 	// a dictionary of class descriptions that the event belongs to keyed on
 	// class identifier.
@@ -37,11 +37,11 @@ type Event struct {
 	Postcode string `json:"postcode"`
 	// venue geographical data.
 	GeoData GeoData `json:"geo_data"`
-	// human readable venue city.
+	// human-readable venue city.
 	City string `json:"city_desc"`
 	// venue city code
 	CityCode string `json:"city_code"`
-	// human readable country name.
+	// human-readable country name.
 	Country string `json:"country_desc"`
 	// ISO 3166-1 country code.
 	CountryCode string `json:"country_code"`
@@ -68,7 +68,7 @@ type Event struct {
 	UpsellList UpsellList `json:"event_upsell_list"`
 	// pricing summary from cached availability. Only present when requested.
 	CostRange CostRange `json:"cost_range"`
-	// pricining summary from cached availability. Only present when requested.
+	// pricing summary from cached availability. Only present when requested.
 	NoSinglesCostRange CostRange `json:"no_singles_cost_range"`
 	// summary pricing information broken down by availability. This is cached
 	// data. Only present when requested.
@@ -101,7 +101,7 @@ type Event struct {
 	AvailabilityDetails AvailabilityDetails `json:"availability_details"`
 	// list of Event objects that comprise a meta event.
 	ComponentEvents []Event `json:"component_events"`
-	// list of valid quanities available for purchase. from cached data, only
+	// list of valid qualities available for purchase. from cached data, only
 	// available when requested by **get_events** or **get_event**.
 	ValidQuantities []int `json:"valid_quantities"`
 	// indicates that the event is an addon product to another event.

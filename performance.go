@@ -2,7 +2,7 @@ package ticketswitch
 
 import "time"
 
-// Performance describes an occurance of an Event.
+// Performance describes an occurrence of an Event.
 type Performance struct {
 	// identifier for the performance.
 	ID string `json:"perf_id"`
@@ -13,11 +13,11 @@ type Performance struct {
 	// identifier for the event.
 	EventID string `json:"event_id"`
 
-	// the localised date and time for the performance.
+	// the localized date and time for the performance.
 	Datetime time.Time `json:"iso8601_date_and_time"`
-	// a human readable description of the date of the performance.
+	// a human-readable description of the date of the performance.
 	DateDesc string `json:"date_desc"`
-	// a human readable description of the time of the performance.
+	// a human-readable description of the time of the performance.
 	TimeDesc string `json:"time_desc"`
 	// the number of minutes the performance is expected to run for.
 	RunningTime int `json:"running_time"`
@@ -26,7 +26,7 @@ type Performance struct {
 	HasPoolSeats bool `json:"has_pool_seats"`
 	// the performance has limited availability.
 	IsLimited bool `json:"is_limited"`
-	// the performance is a ghost performance and is nolonger available.
+	// the performance is a ghost performance and is no longer available.
 	IsGhost bool `json:"is_ghost"`
 
 	// the maximum number of seats available to book in a single order. This
@@ -38,7 +38,7 @@ type Performance struct {
 	// pricing summary when no leaving single seats, may also include offers.
 	NoSinglesCostRange CostRange `json:"no_singles_cost_range"`
 
-	// summerised availability data for the performance. This data is cached
+	// summarized availability data for the performance. This data is cached
 	// from previous availability calls and may not be accurate.
 	AvailabilityDetails AvailabilityDetails `json:"avail_details"`
 }

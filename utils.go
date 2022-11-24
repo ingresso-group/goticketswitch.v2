@@ -36,7 +36,7 @@ func marshal(v interface{}) ([]byte, error) {
 
 // DateRange returns a string representation of a date range between two
 // time.Times
-func DateRange(from time.Time, to time.Time) string {
+func DateRange(from, to time.Time) string {
 	if from.IsZero() && to.IsZero() {
 		return ""
 	}
