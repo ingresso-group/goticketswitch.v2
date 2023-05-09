@@ -182,6 +182,7 @@ type UniversalParams struct {
 	AddCustomer                  bool
 	Availability                 bool
 	AvailabilityWithPerformances bool
+	Discounts                    bool
 	ExtraInfo                    bool
 	Reviews                      bool
 	Media                        bool
@@ -207,6 +208,10 @@ func (params *UniversalParams) Universal() map[string]string {
 	if params.AvailabilityWithPerformances {
 		v["req_avail_details"] = "1"
 		v["req_avail_details_with_perfs"] = "1"
+	}
+	if params.Discounts {
+		v["req_avail_details"] = "1"
+		v["req_avail_detail_discounts"] = "1"
 	}
 	if params.ExtraInfo {
 		v["req_extra_info"] = "1"
