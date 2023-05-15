@@ -158,6 +158,7 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		resp.Body.Close()
 		newStr := buf.String()
 		fmt.Printf(newStr)
+		fmt.Println("\n")
 		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
 	}
 
