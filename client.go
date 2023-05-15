@@ -134,6 +134,9 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		if err2 != nil {
 			return nil, err2
 		}
+		if client.Config.DebugMode {
+			fmt.Printf("\nrequest.body:\n%s\n---\n", string(data))
+		}
 		body = bytes.NewBuffer(data)
 		req.Header.Set("Content-Type", "application/json")
 	}
@@ -152,13 +155,11 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 	if client.Config.DebugMode {
 		// print it and then wrap it back up, like nothing happened
 
-		fmt.Println("\nresponse.Body")
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(resp.Body)
 		resp.Body.Close()
 		newStr := buf.String()
-		fmt.Printf(newStr)
-		fmt.Println("\n-------\n")
+		fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
 		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
 	}
 
