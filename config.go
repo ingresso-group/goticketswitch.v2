@@ -8,6 +8,7 @@ type Config struct {
 	SubUser     string
 	Language    string
 	CryptoBlock string
+	DebugMode   bool
 }
 
 // NewConfig returns a pointer to a newly created Config.

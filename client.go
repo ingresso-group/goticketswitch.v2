@@ -149,6 +149,17 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 	if err != nil {
 		return nil, err
 	}
+	if client.Config.DebugMode {
+		// print it and then wrap it back up, like nothing happened
+
+		fmt.Println("\nresponse.Body")
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(resp.Body)
+		resp.Body.Close()
+		newStr := buf.String()
+		fmt.Printf(newStr)
+		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
+	}
 
 	if resp.StatusCode != 200 {
 		err = checkForError(resp)
@@ -454,9 +465,10 @@ func (client *Client) GetEvent(ctx context.Context, eventID string, params *Univ
 type ListPerformancesParams struct {
 	UniversalParams
 	PaginationParams
-	EventID   string
-	StartDate time.Time
-	EndDate   time.Time
+	EventID         string
+	StartDate       time.Time
+	EndDate         time.Time
+	PerformanceTime string
 }
 
 // Params returns the call parameters as a map
