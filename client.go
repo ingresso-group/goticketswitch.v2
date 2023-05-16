@@ -120,6 +120,9 @@ func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 // Do make a request to the API
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
 	u, err := client.getURL(req)
+	if client.Config.DebugMode {
+		fmt.Printf("\nrequest.url:\n%s\n---\n", u.String())
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -133,6 +136,9 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		data, err2 := marshal(req.Body)
 		if err2 != nil {
 			return nil, err2
+		}
+		if client.Config.DebugMode {
+			fmt.Printf("\nrequest.body:\n%s\n---\n", string(data))
 		}
 		body = bytes.NewBuffer(data)
 		req.Header.Set("Content-Type", "application/json")
@@ -148,6 +154,20 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 	resp, err = client.HTTPClient.Do(r)
 	if err != nil {
 		return nil, err
+	}
+	if client.Config.DebugMode {
+		// print it and then wrap it back up, like nothing happened
+
+		buf := new(bytes.Buffer)
+		_, err = buf.ReadFrom(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			newStr := buf.String()
+			fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
+		} else {
+			fmt.Printf("\nresponse.Body ERRORED:\n%s\n-------\n", err)
+		}
+		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
 	}
 
 	if resp.StatusCode != 200 {
@@ -454,9 +474,10 @@ func (client *Client) GetEvent(ctx context.Context, eventID string, params *Univ
 type ListPerformancesParams struct {
 	UniversalParams
 	PaginationParams
-	EventID   string
-	StartDate time.Time
-	EndDate   time.Time
+	EventID         string
+	StartDate       time.Time
+	EndDate         time.Time
+	PerformanceTime string
 }
 
 // Params returns the call parameters as a map
@@ -469,6 +490,10 @@ func (params *ListPerformancesParams) Params() map[string]string {
 
 	if dr := DateRange(params.StartDate, params.EndDate); dr != "" {
 		values["date_range"] = dr
+	}
+
+	if params.PerformanceTime != "" {
+		values["s_time"] = params.PerformanceTime
 	}
 
 	for k, v := range params.Pagination() {

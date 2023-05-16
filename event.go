@@ -1,5 +1,7 @@
 package ticketswitch
 
+import "github.com/shopspring/decimal"
+
 // GeoData contains the longitude and latitude of the Venue
 type GeoData struct {
 	// latitude of the venue.
@@ -99,12 +101,14 @@ type Event struct {
 	// summary of availability details from cached data. Only
 	// present when requested.
 	AvailabilityDetails AvailabilityDetails `json:"availability_details"`
-	// list of Event objects that comprise a meta event.
+	// avail details
+	AvailDetails AvailDetails `json:"avail_details"`
+	// list of Event objects that comprise a meta event
 	ComponentEvents []Event `json:"component_events"`
 	// list of valid qualities available for purchase. from cached data, only
-	// available when requested by **get_events** or **get_event**.
+	// available when requested by **get_events** or **get_event**
 	ValidQuantities []int `json:"valid_quantities"`
-	// indicates that the event is an addon product to another event.
+	// indicates that the event is an addon product to another event
 	IsAddon bool `json:"is_add_on"`
 	// AreaCode is for internal use only
 	AreaCode string `json:"area_code"`
@@ -112,6 +116,21 @@ type Event struct {
 	Code string `json:"event_code"`
 	// VenueCode is for internal use only
 	VenueCode string `json:"venue_code"`
+}
+
+type AvailDetailsTicketType struct {
+	Code       string           `json:"ticket_type_code"`
+	Desc       string           `json:"ticket_type_desc"`
+	PriceBands []EventPriceBand `json:"price_band"`
+}
+
+type AvailDetails struct {
+	AvailDetailsTicketTypes []AvailDetailsTicketType `json:"ticket_type"`
+}
+
+type AvailableDates struct {
+	First string `json:"first_yyyymmdd"`
+	Last  string `json:"last_yyyymmdd"`
 }
 
 // ListEventsResults represents a set of events returned by the API
@@ -129,4 +148,28 @@ type ListEventsResults struct {
 
 	// performances returned by the call
 	Events []Event `json:"event"`
+}
+
+type EventPriceBand struct {
+	Code               string               `json:"price_band_code"`
+	Desc               string               `json:"price_band_desc"`
+	AvailabilityDetail []AvailabilityDetail `json:"avail_detail"`
+}
+
+type AvailabilityDetail struct {
+	AvailabilityCurrencyCode string          `json:"avail_currency_code"`
+	AvailableDates           AvailableDates  `json:"available_dates"`
+	AvailableWeekdays        int             `json:"available_weekdays_bitmask"`
+	CombinedTaxComponent     decimal.Decimal `json:"combined_tax_component"`
+	// CombinedTaxComponentInDesired     decimal.Decimal `json:"combined_tax_component_in_desired"`
+	// DesiredCurrencyCode      string          `json:"desired_currency_code"`
+	DiscountSemanticType string          `json:"discount_semantic_type"`
+	Seatprice            decimal.Decimal `json:"seatprice"`
+	// SeatpriceInDesired       decimal.Decimal `json:"seatprice_in_desired"`
+	SuffixedPriceBandCode string          `json:"suffixed_price_band_code"`
+	Surcharge             decimal.Decimal `json:"surcharge"`
+	// SurchargeInDesired       decimal.Decimal `json:"surcharge_in_desired"`
+	SurchargeTaxSubComponent decimal.Decimal `json:"surcharge_tax_sub_component"`
+	// SurchargeTaxSubComponentInDesired decimal.Decimal `json:"surcharge_tax_sub_component_in_desired"`
+	ValidQuantities []int `json:"valid_quantities"`
 }
