@@ -120,6 +120,9 @@ func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 // Do make a request to the API
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
 	u, err := client.getURL(req)
+	if client.Config.DebugMode {
+		fmt.Printf("\nrequest.url:\n%s\n---\n", u.String())
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -483,6 +486,10 @@ func (params *ListPerformancesParams) Params() map[string]string {
 
 	if dr := DateRange(params.StartDate, params.EndDate); dr != "" {
 		values["date_range"] = dr
+	}
+
+	if params.PerformanceTime != "" {
+		values["s_time"] = params.PerformanceTime
 	}
 
 	for k, v := range params.Pagination() {
