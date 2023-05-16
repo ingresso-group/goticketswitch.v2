@@ -159,10 +159,14 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		// print it and then wrap it back up, like nothing happened
 
 		buf := new(bytes.Buffer)
-		buf.ReadFrom(resp.Body)
+		_, err = buf.ReadFrom(resp.Body)
 		resp.Body.Close()
-		newStr := buf.String()
-		fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
+		if err != nil {
+			newStr := buf.String()
+			fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
+		} else {
+			fmt.Printf("\nresponse.Body ERRORED:\n%s\n-------\n", err)
+		}
 		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
 	}
 
