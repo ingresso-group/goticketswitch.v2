@@ -121,7 +121,7 @@ func (client *Client) setHeaders(ctx context.Context, r *Request) error {
 func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response, err error) {
 	u, err := client.getURL(req)
 	if client.Config.DebugMode {
-		fmt.Printf("\nrequest.url:\n%s\n---\n", u.String())
+		fmt.Printf("\n---\nrequest:\n%s %s\n", req.Method, u.String())
 	}
 	if err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 			return nil, err2
 		}
 		if client.Config.DebugMode {
-			fmt.Printf("\nrequest.body:\n%s\n---\n", string(data))
+			fmt.Printf("\nrequest.body:\n%s\n", string(data))
 		}
 		body = bytes.NewBuffer(data)
 		req.Header.Set("Content-Type", "application/json")
@@ -162,11 +162,10 @@ func (client *Client) Do(ctx context.Context, req *Request) (resp *http.Response
 		_, err = buf.ReadFrom(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			newStr := buf.String()
-			fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
-		} else {
-			fmt.Printf("\nresponse.Body ERRORED:\n%s\n-------\n", err)
+			fmt.Printf("\nERROR in response")
 		}
+		newStr := buf.String()
+		fmt.Printf("\nresponse.Body:\n%s\n-------\n", newStr)
 		resp.Body = io.NopCloser(bytes.NewReader(buf.Bytes()))
 	}
 
