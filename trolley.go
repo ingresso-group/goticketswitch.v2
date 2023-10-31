@@ -13,14 +13,15 @@ type Seat struct {
 }
 
 type TicketOrder struct {
-	DiscountCode       string          `json:"discount_code"`
-	DiscountDesc       string          `json:"discount_desc"`
-	NumberOfSeats      int             `json:"no_of_seats"`
-	SaleSeatprice      decimal.Decimal `json:"sale_seatprice"`
-	SaleSurcharge      decimal.Decimal `json:"sale_surcharge"`
-	Seats              []Seat          `json:"seats"`
-	TotalSaleSeatprice decimal.Decimal `json:"total_sale_seatprice"`
-	TotalSaleSurcharge decimal.Decimal `json:"total_sale_surcharge"`
+	DiscountCode         string          `json:"discount_code"`
+	DiscountSemanticType string          `json:"discount_semantic_type"`
+	DiscountDesc         string          `json:"discount_desc"`
+	NumberOfSeats        int             `json:"no_of_seats"`
+	SaleSeatprice        decimal.Decimal `json:"sale_seatprice"`
+	SaleSurcharge        decimal.Decimal `json:"sale_surcharge"`
+	Seats                []Seat          `json:"seats"`
+	TotalSaleSeatprice   decimal.Decimal `json:"total_sale_seatprice"`
+	TotalSaleSurcharge   decimal.Decimal `json:"total_sale_surcharge"`
 }
 
 type TicketOrdersHolder struct {
