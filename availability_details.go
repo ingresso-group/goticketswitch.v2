@@ -9,6 +9,8 @@ import (
 // AvailabilityDetails describes an availability summary for a performance.
 // This information is generated using cached data.
 type AvailabilityDetails struct {
+	// ticket type array, if present
+	TicketType []TicketType `json:"ticket_type"`
 	// identifier of the ticket type.
 	TicketTypeCode string
 	// human readable description of the ticket type.

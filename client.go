@@ -473,11 +473,12 @@ func (client *Client) GetEvent(ctx context.Context, eventID string, params *Univ
 type ListPerformancesParams struct {
 	UniversalParams
 	PaginationParams
-	EventID          string
-	StartDate        time.Time
-	EndDate          time.Time
-	PerformanceTime  string
-	RequireCostRange bool
+	EventID             string
+	StartDate           time.Time
+	EndDate             time.Time
+	PerformanceTime     string
+	RequireCostRange    bool
+	RequestAvailDetails bool
 }
 
 // Params returns the call parameters as a map
@@ -498,6 +499,10 @@ func (params *ListPerformancesParams) Params() map[string]string {
 
 	if params.RequireCostRange {
 		values["req_cost_range"] = "yes"
+	}
+
+	if params.RequestAvailDetails {
+		values["req_avail_details"] = "yes"
 	}
 
 	for k, v := range params.Pagination() {
