@@ -171,5 +171,6 @@ type AvailabilityDetail struct {
 	// SurchargeInDesired       decimal.Decimal `json:"surcharge_in_desired"`
 	SurchargeTaxSubComponent decimal.Decimal `json:"surcharge_tax_sub_component"`
 	// SurchargeTaxSubComponentInDesired decimal.Decimal `json:"surcharge_tax_sub_component_in_desired"`
-	ValidQuantities []int `json:"valid_quantities"`
+	ValidQuantities       []int `json:"valid_quantities"`
+	CachedNumberAvailable int   `json:"cached_number_available"`
 }
