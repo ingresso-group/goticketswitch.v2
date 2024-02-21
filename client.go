@@ -498,7 +498,7 @@ func (params *ListPerformancesParams) Params() map[string]string {
 	}
 
 	if params.RequireCostRange {
-		values["req_cost_range"] = "yes"
+		values["req_cost_range"] = "1"
 	}
 
 	if params.RequestAvailDetails {
